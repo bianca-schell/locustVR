@@ -8,7 +8,7 @@ expDB = 'flyExperiments.db'
 
 project = 'DecisionGeometry'
 
-nPosts = 10
+nPosts = 1
 
 posts = range(3,4)
 posts = list(itertools.chain.from_iterable(itertools.repeat(x, 10) for x in posts))
@@ -81,10 +81,15 @@ def defineStimuli(expType, nSwitch, nReplicates=2, N=2, d=1.0, ang=np.pi/6, pick
 		for k in range(0,nSwitch-2):
 			data.append([])
 			# pick random number of posts
-			N = np.random.randint(np.max(posts)-np.min(posts)+1)+np.min(posts)
+			#N = np.random.randint(np.max(posts)-np.min(posts)+1)+np.min(posts)
+			#for now only 1 post so instead of above:
+			N=1
+			
 			# pick a random start angle (one of six angles obtained by splitting angle of symmetry for N posts in six parts)
 			start_ang = 2*np.pi*(np.random.randint(start_ang_split)+1) / start_ang_split
-			for j in range(0,nPosts):
+			
+			#atm only 1 post, no other posts to place
+			'''for j in range(0,nPosts):
 				if j < N:
 					r = d
 					theta = start_ang + j*2*np.pi*ang / (N*6)
@@ -93,7 +98,7 @@ def defineStimuli(expType, nSwitch, nReplicates=2, N=2, d=1.0, ang=np.pi/6, pick
 					dataStimuli = {'position' : (x,y), 'distance' : r, 'angle' : 2*np.pi*ang / (N*6)}
 				else:
 					dataStimuli = 'None'
-				data[-1].append(str(dataStimuli))	
+				data[-1].append(str(dataStimuli))	'''
 	elif expType == 'angles':
 		data = []
 		# define stimuli nSwitch-2 times since we have two control stimuli - one in the beginning; other in the end

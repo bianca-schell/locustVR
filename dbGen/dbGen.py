@@ -4,9 +4,9 @@ import numpy as np
 from random import shuffle
 
 projectDB = 'flyProjects.db'
-expDB = 'flyExperiments.db'
+expDB = 'singlePost.db'
 
-project = 'DecisionGeometry'
+project = 'singlpost'
 
 nPosts = 1
 

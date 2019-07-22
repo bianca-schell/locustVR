@@ -51,7 +51,71 @@ class MyExperiment(ExperimentBase):
 
         except KeyboardInterrupt:
             self.stop()
-            
+class MyStimuli():
+    
+    def __init__(self, ):
+    
+    
+    def getExperiment(self):
+        # establish a connecttion to the project database
+        conn = sqlite3.connect(projectDB)
+        # connect a cursor that goes through the project database
+        cursorProject = conn.cursor()
+        # establish a second connecttion to the experiment database
+        conn2 = sqlite3.connect(expDB)
+        # connect a cursor that goes through the experiment database
+        cursorExperiment = conn2.cursor()
+
+        # pick a random experiment from specified project
+        cursorProject.execute("Select exp from projects where project = ? ",(project,))
+        fetched = cursorProject.fetchall()
+        print('fetched : ' + str(fetched))
+        
+        expType = np.unique(fetched)
+        print('the type of experiment i have in stock are '+str(expType))
+        self.expTrial = -1
+        
+        # if number of replicates is not met, run experiment
+        for k in range(0,len(expType)):
+            expTemp = int(expType[k])
+            print((project,expTemp,))
+            cursorExperiment.execute("Select * from experiments where project = ? and exp = ? ",(project,expTemp,))
+            fetched2 = cursorExperiment.fetchall()
+            print('We already have ' + str(len(fetched2)) + ' replicates')
+            if len(fetched2) < replication:
+                self.expTrial = expTemp
+                break
+
+        if self.expTrial > -1:
+            cursorProject.execute("Select replicate from projects where project = ? and exp = ? ",(project,self.expTrial,))
+            fetched = cursorProject.fetchall()
+            repType = np.unique(fetched)
+            print('plenty of replicates : ' + str(repType))
+            repIdx = np.random.randint(len(repType), size=1)
+            print(repType)
+            self.replicate = int(repType[repIdx])
+            print('so lets pick ' + str(self.replicate))
+            cursorProject.execute("Select tSwitch from projects where project = ? and exp = ? and replicate = ?",(project,self.expTrial,self.replicate,))
+            fetched = cursorProject.fetchall()
+            print('fetched : ' + str(fetched))
+            self.tSwitch = np.unique(fetched)
+            cursorProject.execute("Select tExp from projects where project = ? and exp = ? and replicate = ?",(project,self.expTrial,self.replicate,))
+            self.tExp = np.unique(cursorProject.fetchall())  
+            self.dateStart = datetime.datetime.now()      
+        else:
+            tExp = 0
+
+        # close all established connections
+        conn.close()
+        conn2.close()
+
+        
+        
+        
+        
+       #************************************************************************
+    
+    
 if __name__ == '__main__':
     import logging
     import argparse
@@ -65,4 +129,9 @@ if __name__ == '__main__':
 
     e = MyExperiment.new_osg(debug=args.debug_display)
     e.start(record=True)
+    #get stimuli: make a class for stimuli?
+    
+    
+    
+    
     e.run_forever()

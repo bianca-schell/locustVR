@@ -12,9 +12,9 @@ from locustvr.experiment import ExperimentBase
 
 replication = 3
 
-projectDB = '/home/loopbio/Documents/databases/locustProjects.db'
-expDB = '/home/loopbio/Documents/databases/locustExperiments.db'
-pathData = '/home/loopbio/Documents/data/'
+projectDB = '/home/loopbio/Documents/locustVR/databases/locustProjects.db'
+expDB = '/home/loopbio/Documents/locustVR/databases/locustExperiments.db'
+pathData = '/home/loopbio/Documents/locustVR/data/'
 
 
 project = 'DecisionGeometry'
@@ -141,35 +141,10 @@ class MyExperiment(ExperimentBase):
         path = pathDefine(pathData,self.expId)
         with open(path+'/results.csv', 'w') as output:
             while self.running:
-                pos = self.observer.position
-                direc = self.observer.azimuth
-                t = time.time() - t0
-                sl_t = time.time() - sl_t0
-
-                if sl_t < 3:
-                    self.observer.velocity = 0.0
-                else:
-                    self.observer.velocity = 0.20
-
-                if t > self.tExp*60*.9 and lastMessage:
-
-                    try:
-                        emailer.twitStatus(self.expId,status = 1, t=self.tExp*.1)
-                    except:
-                        pass
-                    lastMessage = False
-
-                if t > self.tExp*60:
-                    self.running = False
-                    self.writeInDb()
-                    emailer.twitStatus(self.expId,status = 2, t=self.tExp)                   
-                elif t > (nStimuli+1)*self.tSwitch*60:
-                    nStimuli = nStimuli+1
-                    self.observer.reset_to(**self.start_position)
-                    self.updateStimuli(nStimuli)
-                    sl_t0 = time.time()
-                    self.cntr = 0
                 
+
+               
+
                 for nPost in range(0,10):
                     if distance(pos, self.postPosition[nPost,:], True) < 0.5:
                         self.observer.reset_to(**self.start_position)
@@ -185,6 +160,9 @@ class MyExperiment(ExperimentBase):
                 #print(t)  
                 output.write('%.8f, %.8f, %.8f, %.4f, %d, %.8f, %s\n' % (pos['x'], pos['y'], pos['z'], direc, self.cntr, t, str(nStimuli)))
                 time.sleep(0.005)
+                # find out how to put coordinates, cntr for every reset of position, maybe direction of animal
+                # change the path of csv, db ...
+                # folder that contains csv file should have the name of the uniqueID
 
 
     def updateStimuli(self,nStimuli):

@@ -9,10 +9,20 @@ import numpy as np
 
 from locustvr.experiment import ExperimentBase
 
-#change directories!!******************************************************************************
+
+replication = 3
+
 projectDB = '/home/loopbio/Documents/databases/locustProjects.db'
 expDB = '/home/loopbio/Documents/databases/locustExperiments.db'
 pathData = '/home/loopbio/Documents/data/'
+
+
+project = 'DecisionGeometry'
+experimenter = 'BS'
+
+running = 1
+numberPost = 10
+
 
 
 class MyExperiment(ExperimentBase):
@@ -27,6 +37,7 @@ class MyExperiment(ExperimentBase):
         self.replicate = -1
         self.tSwitch = 0
         self.tExp = 0
+        self.dateStart = ''
 
         self.reset_origin()
         # assign experiment a unique id
@@ -36,6 +47,8 @@ class MyExperiment(ExperimentBase):
         # start every experiment with a no post condition
         #self.updateStimuli(0)
         
+        # assign experiment a unique id
+        self.expId = uuid.uuid4()
 
     # the base class calls this with the current integrated position in the world. the default implementation
     # just calls move_world. However this keeps an origin and can reset it.
@@ -54,8 +67,7 @@ class MyExperiment(ExperimentBase):
             self._origin = None
     
     def getExperiment(self):
-        pass
-        
+                
         # establish a connecttion to the project database
         conn = sqlite3.connect(projectDB)
         # connect a cursor that goes through the project database
@@ -64,12 +76,13 @@ class MyExperiment(ExperimentBase):
         conn2 = sqlite3.connect(expDB)
         # connect a cursor that goes through the experiment database
         cursorExperiment = conn2.cursor()
-        '''
+        
         # pick a random experiment from specified project
         cursorProject.execute("Select exp from projects where project = ? ",(project,))
         fetched = cursorProject.fetchall()
         print('fetched : ' + str(fetched))
-        
+
+
         expType = np.unique(fetched)
         print('the type of experiment i have in stock are '+str(expType))
         self.expTrial = -1
@@ -108,7 +121,73 @@ class MyExperiment(ExperimentBase):
         conn.close()
         conn2.close()
 
-     def updateStimuli(self,nStimuli):
+
+    def experiment_start(self):
+        # self.recorder.start()
+        self.observer.start_observer()
+        self.loop()
+
+
+
+    def loop(self):
+        
+        nStimuli = 0
+        t0 = time.time()
+        sl_t0 = time.time()
+        
+        lastMessage = True
+
+        # write output file in specified directory
+        path = pathDefine(pathData,self.expId)
+        with open(path+'/results.csv', 'w') as output:
+            while self.running:
+                pos = self.observer.position
+                direc = self.observer.azimuth
+                t = time.time() - t0
+                sl_t = time.time() - sl_t0
+
+                if sl_t < 3:
+                    self.observer.velocity = 0.0
+                else:
+                    self.observer.velocity = 0.20
+
+                if t > self.tExp*60*.9 and lastMessage:
+
+                    try:
+                        emailer.twitStatus(self.expId,status = 1, t=self.tExp*.1)
+                    except:
+                        pass
+                    lastMessage = False
+
+                if t > self.tExp*60:
+                    self.running = False
+                    self.writeInDb()
+                    emailer.twitStatus(self.expId,status = 2, t=self.tExp)                   
+                elif t > (nStimuli+1)*self.tSwitch*60:
+                    nStimuli = nStimuli+1
+                    self.observer.reset_to(**self.start_position)
+                    self.updateStimuli(nStimuli)
+                    sl_t0 = time.time()
+                    self.cntr = 0
+                
+                for nPost in range(0,10):
+                    if distance(pos, self.postPosition[nPost,:], True) < 0.5:
+                        self.observer.reset_to(**self.start_position)
+                        self.cntr += 1
+                        sl_t0 = time.time()
+                        break
+                if distance(pos, self.start_position, False) > self.postDistance:
+                    self.observer.reset_to(**self.start_position)
+                    self.cntr += 1
+                    sl_t0 = time.time()
+
+            #print "XYZ(%3.2f, %3.2f, %3.2f)" % (pos['x'], pos['y'], pos['z']), self.counter     
+                #print(t)  
+                output.write('%.8f, %.8f, %.8f, %.4f, %d, %.8f, %s\n' % (pos['x'], pos['y'], pos['z'], direc, self.cntr, t, str(nStimuli)))
+                time.sleep(0.005)
+
+
+    def updateStimuli(self,nStimuli):
         # establish a connecttion to the project database
         conn = sqlite3.connect(projectDB)
         # connect a cursor that goes through the project database
@@ -134,23 +213,80 @@ class MyExperiment(ExperimentBase):
         
         # close connection
         conn.close()
-    '''
+
+
+    def writeInDb(self):
+        todayDate = self.dateStart.strftime('%Y-%m-%d')
+        self.startTime = self.dateStart.strftime('%H:%M')
+        self.endTime = datetime.datetime.now().strftime('%H:%M')
+        # establish a connection to the experiment database
+        conn2 = sqlite3.connect(expDB)
+        # connect a cursor that goes through the experiment database
+        cursorExperiment = conn2.cursor()
+
+        expId = 0
+        values = [project,self.expTrial,self.replicate,
+                      todayDate,self.startTime,self.endTime,
+                      experimenter,str(self.expId)]
+        cursorExperiment.execute("INSERT INTO experiments VALUES (?,?,?,?,?,?,?,?)",values)
+        
+        # commit and close connection
+        conn2.commit()
+        conn2.close()
+        
+            
+
+        
+    
+    
     def run_forever(self):
         t0 = time.time()
+        e.reset_origin()
+        j=0
+
         try:
             while 1:
                 time.sleep(0.1)
                 # send state to motif to record
                 self.publish_state()
-
+                self.writeInDb()
+                
                 t = time.time()
-                if (t - t0) > 20:
-                    #e.move_world(100, 12, 0)
-                    #hier aendern!!!
-                    e.do_move_world(10, 10,0)
-                    if (t - t0) > 30:
-                        t0 = t
+                
+                '''for k in range(0,10):
+                    #print('k=', k)
+                    self.move_node('Cylinder' + str(k), 1000, 1000,  0)
+                    #self.move_node('Cylinder2' , 2, 2,  0)
+                    self.move_node('Cylinder3' , 1.5, 1.5,  0)
+                    #self.move_node('Cylinder4' , 0, 1,  0)
+                    self.move_node('Cylinder5' , -1.5, -1.5,  0)
+                    self.move_node('Cylinder6' , 1.5,-1.5,  0)
+                    self.move_node('Cylinder0' , -1.5, 1.5,  0)
+                    if j==0:
                         self.reset_origin()
+
+                        print('reset or')
+                        j=1
+                    if (t - t0) < 4:
+                        print('time=', t -t0)
+                    elif (t - t0) < 7:
+                        #self.move_node('Cylinder0' , 2, 2,  0)
+                        e.reset_origin()
+                        print('time=', t -t0)
+
+                        print('t=10')
+                        #keeps resetting the origin between t=4 and t<7. afterwards moving on
+
+                    else:
+                        self.move_node('Cylinder6' , -2, -2,  0)
+                        #pass'''
+
+
+
+  
+
+                    #pass
+
 
         except KeyboardInterrupt:
             self.stop()
@@ -172,16 +308,14 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     e = MyExperiment.new_osg(debug=args.debug_display)
-    e.start(record=True)
-    #e.getExperiment
-    #e.move_world(100, 12, 0)
-    #  e.reset_origin()
+    e.start(record=False)
+    #e.experiment_start()
+    #e.writeInDb()
 
-    #funkt nicht: e.move_world(30, 500, 0), t0 etc auch nciht: vllt wg globale/lok variable
+    #change to true for recording, atm too much rubbish recording!******************
+    #e.getExperiment
+
+
 
     e.run_forever()
-   # if (t - t0) > 90:
-    #    t0 = t
-     #   e.reset_origin()
-
-
+  

@@ -85,10 +85,6 @@ class MyExperiment(ExperimentBase):
 
     
     def writing_csv(self):
-        #if a==0:
-        #t0 = time.time()
-          #  a=1
-        #print(a)
         global a
         global t0
         if a==0:
@@ -99,12 +95,9 @@ class MyExperiment(ExperimentBase):
         else:
             pass
 
+        #sl_t0 = time.time()
         
-
-        '''sl_t0 = time.time()
-        
-        lastMessage = True'''
-
+        #lastMessage = True
         # write output file in specified directory
         nStimuli = 0
         #t0 = time.time()
@@ -114,15 +107,26 @@ class MyExperiment(ExperimentBase):
         #opn the csv file and then 'a' for appending the next line, instead of overwriting ('w')
         with open(path+'/results.csv', 'a') as output:
             
-            #print pos in terminal:
             t = time.time() - t0
             #while t*60*60<1: 
-                
+            #print pos in terminal:
+               
             #print('coordinates:' e.x, e.y, e.z)
             #t = time.time() - t0
             self.cntr+=1
-            #print pos in csv
-            if self.cntr%700==0:
+            #b=round(t,4)
+            #print(b)
+
+            #print pos in csv 
+            #better would be: 1/200 sec
+            #if b%0.2000==0:
+            #funktioniert nicht. dann gibt er an bspw 0.2 s 10 werte aus, bei 0,4 s ebenfalls usw
+
+            #ODER INCREMENT mit +1/200 und dann werte kleiner /groesser als
+            #jeder 1000. macht etwa 100 werte pro sekunde
+
+            if self.cntr%1000==0:
+
                 output.write('%.8f, %.8f, %.8f,  %d, %.8f, %s\n' % (e.x, e.y, e.z, self.cntr, t, str(nStimuli)))
 
 
@@ -191,22 +195,6 @@ class MyExperiment(ExperimentBase):
         # self.recorder.start()
         self.observer.start_observer()
         self.loop()
-
-
-
-    '''def loop(self):
-        
-        nStimuli = 0
-        t0 = time.time()
-        sl_t0 = time.time()
-        
-        lastMessage = True
-
-        # write output file in specified directory
-        path = pathDefine(pathData,self.expId)
-        print('saved in csv in:', path)
-        with open(path+'/results.csv', 'w') as output:
-            pass'''
 
 
 
@@ -307,7 +295,6 @@ if __name__ == '__main__':
     
     while 1:
         e.writing_csv()
-    #e.loop()
     #print('koord: ',str(e._origin), e._origin)
     #e.printing_coordinates()
     

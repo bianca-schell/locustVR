@@ -11,8 +11,6 @@ class MyExperiment(ExperimentBase):
         self._olock = threading.Lock()
 
         self.load_osg('/home/loopbio/Documents/stimuli/demo_world_v3.osgt')
-        reset_origin()
-        
 
     # the base class calls this with the current integrated position in the world. the default implementation
     # just calls move_world. However this keeps an origin and can reset it.
@@ -24,6 +22,8 @@ class MyExperiment(ExperimentBase):
 
         # relative position
         self.move_world(x - ox, y - oy, z - oz)
+        global gx,gy,gz
+        gx=x-ox
 
     def reset_origin(self):
         self.log.info('reset origin')
@@ -36,12 +36,18 @@ class MyExperiment(ExperimentBase):
             while 1:
                 time.sleep(0.1)
                 # send state to motif to record
-                self.publish_state()
+                #self.publish_state()
 
                 t = time.time()
-                if (t - t0) > 300000:
+                if (t - t0) > 10:
                     t0 = t
+                    
+                    self.publish_state()
+                    global gx
+                    print(gx)
                     self.reset_origin()
+                    self.publish_state()
+                    print(gx)
 
         except KeyboardInterrupt:
             self.stop()
@@ -61,3 +67,4 @@ if __name__ == '__main__':
     e.start(record=True)
     e.run_forever()
 
+    

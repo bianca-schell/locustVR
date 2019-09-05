@@ -69,7 +69,6 @@ class MyExperiment(ExperimentBase):
         # set starting position for stimuli
         self.rootPosition = np.zeros((1,2))
         self.postPosition = np.zeros((numberPost,2))
-        self.postDistance = 5.0
 
 
         self.reset_origin()
@@ -84,14 +83,16 @@ class MyExperiment(ExperimentBase):
         self.expId = uuid.uuid4()
         # event counter (number of times locust position is reset)
         self.cntr = 0
+        self.counter=0
         self.running = True
         self.locPosition = {'x':0,'y':0,'z':0}
-        
+        #self.resetting= False
 
 
     # the base class calls this with the current integrated position in the world. the default implementation
     # just calls move_world. However this keeps an origin and can reset it.
     def do_move_world(self, x, y, z):
+        #resetting to 0,0: 
         with self._olock:
             if self._origin is None:
                 self._origin = x, y, z
@@ -99,100 +100,121 @@ class MyExperiment(ExperimentBase):
 
         # relative position
         self.move_world(x - ox, y - oy, z - oz)
-        global gx,gz,gy
-        gx=x
-        gy=y
-        gz=z 
-
-        self.locPosition = {'x': x, 'y': y, 'z': z }
-
-    #def running_exp(self):
-        #putting (to start with) 5 experimental conditions
-
-
-
-
-
+        self.locPosition = {'x': x-ox, 'y': y-oy, 'z': z-oz }
+        #print('self.locPositionx', self.locPosition['x'])
+        #print('ox',ox, oy, oz)
+        #print('x,y,z',x, y, z)
+        
+        #ox, oy, oz are constant throughout one experiment, set at reset_origin: self._origin wird mit x,y,z belegt,
+        # dann werden ox, oy, oz mit self._origin belegt--> dann sollte locPosition wieder 0,0 sein.
+        #*************x - ox is correct  position of the locust!!!*****************
 
     
     def running_writing_csv(self):
-        global a
-        global t0
-        if a==0:
-            #global a 
-            a=1
-            #print(a)
-            t0 = time.time()
-        
-
+        t0 = time.time()
+        firstinitialized=False
+        initialized=False
+        reached=True
+        write=True
+        reset= False
+        go=False
         #sl_t0 = time.time()
-        
         #lastMessage = True
-        # write output file in specified directory
+        stimfourisreached=True
         nStimuli = 0
-        #t0 = time.time()
-        #print('time.t', t0)
+        n=1
         path = pathDefine(pathData,self.expId)
         #print('saved in csv in:', path)
         #opn the csv file and then 'a' for appending the next line, instead of overwriting ('w')
         with open(path+'/results.csv', 'a') as output:
-            while 1:
+            #self.locPosition = {'x':0,'y':0,'z':0}
+            #self.publish_state()
+            #print('self state',self._state())
+            #have 5 experiments:
+            
+            while nStimuli<=4:
+                self.publish_state()
+                #while 1 vielleicht aendern zu while self.start oder runforever oder variable xy=1, diese  
+                # bei if nStimuli==4 dann auf 0 setzen!!!
                 #time starts at t = t0=0
                 t = time.time() - t0
-                while t < 3*60:
-                    #control: no post at t< 3 min
-                    pass
+                
 
-
-
-
-
-                for nPost in range(0,10):
-                    #dist is the variable that is the outcome of the function distance
-                    # ':'means take all the values in that dimension which are x and y
-                    dist = distance (self.locPosition, self.postPosition[nPost,:] ,  True)
-                    if dist < 0.5:
-                        print('u reached the post')
-                        print('locPos',self.locPosition)
-                    
-                    print('dist', dist)
-
-                if t> 0.8 and nStimuli < 4:
-                    nStimuli = nStimuli+1
-                    #hier: reset orig
+                #first stimulus is no post condition from database as control. should last for 3 / 5 min.
+                #once resetting bf stimulus
+                if nStimuli==0 and firstinitialized==False:
+                    self.reset_origin()
                     self.updateStimuli(nStimuli)
-                    #sl_t0 = time.time()
-                    #self.cntr = 0
+                    firstinitialized=True
+                    print('nStimuli:', nStimuli)
+                    write=True
+                    #print('LocPosition after reset:',self.locPosition['x'])
+                    #print('1 postPosition', self.postPosition[0,:])
+                    print('************************************************************************')
+                    print(' ')
+                        
+                if t>2:
+                    #change to 5*60!!!
+                    for nPost in range(0,10):
+                        #dist is the variable that is the outcome of the function distance
+                        # ':'means take all the values in that dimension which are x and y
+                        dist = distance(self.locPosition, self.postPosition[nPost,:] ,  True)
+                        if self.cntr%10000==0 and reached == False and dist<1000:
+                            print('the distance to post %d is:' %(nPost),dist)
+                            #distanz stimmt nicht. der post ist nicht 5 vom locust entfernt!!!
+                        #bis hier alles gut dann self.origin fkt nicht*********************************************  
+                        if reached==True:
+                            nStimuli = nStimuli+1
+                            print('nStimuli:', nStimuli)
+                            self.updateStimuli(nStimuli)
+                            self.reset_origin()
+                            #here while as sleep time until reset has been successfully done:
+                            while self.locPosition['x'] != 0.0 and self.locPosition['y']!=0:
+                                pass
+                                #print('wait for reset')
+                            output.write('%.8f, %.8f, %.8f,  %d, %.8f, %s\n' % (self.locPosition['x'],self.locPosition['y'],self.locPosition['z'], self.counter, t, str(nStimuli)))
+            
+                            print('Locusts position after reset', self.locPosition['x'],self.locPosition['y'])
+                            print('postPosition', self.postPosition[0,:])
+                            reached=False
 
-   
+
+
+                        if dist < 4.93 and reached == False :
+                            #change to dist < 0.5!!! b4 4.85
+                            write=True
+                            print('Locusts position at reaching', self.locPosition['x'],self.locPosition['y'])
+                            print('*******************************stimulus',nStimuli,':you reached the post***********************')
+                            print('************************************************************************')
+                            print(' ')
+                            #3 seconds no new stimulus, continously resetting org: (change to 3!!!)
+                            reached=True
+                        
+
+
+                        #remove!!!!!next two lines
+
+                        self.updateStimuli(4)
+                        nStimuli=4   
+                        #!!!!!
+                        if nStimuli == 4:
+                            #5 min of control at the end
+                            if stimfourisreached == True:
+                                t_beginning_of_stim4 = t
+                                stimfourisreached = False
+                                print('stim4 starts at t=',t_beginning_of_stim4)    
+                            if t > (t_beginning_of_stim4 + 2):
+                                #change to 5*60!!!
+                                #print(t)
+                                print('Experiment completed')
+                                sys.exit()
 
 
 
-                #WO IST POST POSITION????????????????????????
-                #hier if e.x,y,z = position des posts, 
-                    #reset origin
-                    #counter+=1
-                    #neuen post aufrufen
-                    # kurze time.sleep
-                    #updateStimuli aufrufen
 
 
-
-
-
-
-
-
-                #while t*60*60<1: 
-                #print pos in terminal:
-               
-                #print('coordinates:' e.x, e.y, e.z)
-                #t = time.time() - t0
                 self.cntr+=1
-                #b=round(t,4)
-                #print(b)
-
-                #print pos in csv 
+                #print pos in csv :
                 #better would be: 1/200 sec
                 #if b%0.2000==0:
                 #funktioniert nicht. dann gibt er an bspw 0.2 s 10 werte aus, bei 0,4 s ebenfalls usw
@@ -200,14 +222,15 @@ class MyExperiment(ExperimentBase):
                 #ODER INCREMENT mit +1/200 und dann werte kleiner /groesser als
                 #jeder 1000. macht etwa 100 werte pro sekunde
 
-                if self.cntr%100000==0:
-                    #output.write('%.8f, %.8f, %.8f,  %d, %.8f, %s\n' % (e.x, e.y, e.z, self.cntr, t, str(nStimuli)))
-                    pass
+                if self.cntr%1000==0:
+                    output.write('%.8f, %.8f, %.8f,  %d, %.8f, %s\n' % (self.locPosition['x'],self.locPosition['y'],self.locPosition['z'], self.counter, t, str(nStimuli)))
+            
 
     def reset_origin(self):
         self.log.info('reset origin')
         with self._olock:
             self._origin = None
+
     
     def getExperiment(self):
                 
@@ -280,20 +303,15 @@ class MyExperiment(ExperimentBase):
             fetched = cursorProject.fetchall()
 
             data = fetched[0][0]
-            #print(fetched)
-            #print('fetched in UPDATESTIMULI: ' + str(fetched))
-            #data = fetched[0][0]
             #print(data)
-            '''if data == 'None':
+            if data == 'None':
                 #Should be the name of the blender file
                 self.postPosition[nPost,:] = [1000,1000]
             else:
                 dictData = eval(data)
-                print(dictData['position'])
+                print('position from dictData',dictData['position'])
                 self.postPosition[nPost,:] = dictData['position']
                 self.postDistance = dictData['distance']
-            #self.ds_proxy.move_node('Cylinder' + str(nPost), self.postPosition[nPost,0],  self.postPosition[nPost,1], 0)'''
-            #print(self.postPosition)
         
         # close connection
         conn.close()
@@ -320,34 +338,6 @@ class MyExperiment(ExperimentBase):
         
             
 
-        
-    
-    
-    def run_forever(self):
-        #t0 = time.time()
-        e.reset_origin()
-        j=0
-        
-        try:
-            while 1:
-                time.sleep(0.1)
-                # send state to motif to record
-                self.publish_state()
-                #print('koordinrunfor: ', e._origin, str(e._olock))
-
-                t = time.time()
-                
-
-        except KeyboardInterrupt:
-            self.stop()
-      
-
-    #def printing_coordinates(self):
-    #    while 1:
-    #        print('koord-in-def-printng: ',str(e._origin), e._origin)
-
-
-
 
       
 if __name__ == '__main__':
@@ -363,18 +353,11 @@ if __name__ == '__main__':
 
     e = MyExperiment.new_osg(debug=args.debug_display)
     e.start(record=False)
-    #e.experiment_start()
     #e.writeInDb()
+    #uncomment write in Db so it writes!!! record=True so it records!!!
     
+
+
     e.running_writing_csv()
-    #print('koord: ',str(e._origin), e._origin)
-    #e.printing_coordinates()
-    
-
-    #change to true for recording, atm too much rubbish recording!******************
-    #e.getExperiment
-
-
-    
-    e.run_forever()
+   
     

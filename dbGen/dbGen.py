@@ -52,18 +52,11 @@ def FirstGen():
 	conn.close()
 
 
-# creates a single post fixation control
+# creates a no post  control
 def dataController():
 	data=[]
 	for j in range(0,nPosts):
-		if j == 0:
-			r = distances[0]
-			theta = 2*np.pi*(np.random.randint(6)+1) / 6
-			x = r*np.cos(theta)
-			y = r*np.sin(theta)
-			dataStimuli = {'position' : (x,y), 'distance' : r, 'angle' : theta}
-		else:
-			dataStimuli = 'None'
+		dataStimuli = 'None'
 		data.append(str(dataStimuli))
 	return data 
 

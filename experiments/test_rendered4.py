@@ -10,9 +10,9 @@ import numpy as np
 from locustvr.experiment import ExperimentBase
 
 #change directories!!******************************************************************************
-projectDB = '/home/loopbio/Documents/databases/locustProjects.db'
-expDB = '/home/loopbio/Documents/databases/locustExperiments.db'
-pathData = '/home/loopbio/Documents/data/'
+projectDB = '/home/loopbio/Documents/locustVR/databases/locustProjects.db'
+expDB = '/home/loopbio/Documents/locustVR/databases/locustExperiments.db'
+pathData = '/home/loopbio/Documents/locustVR/data/'
 
 
 class MyExperiment(ExperimentBase):

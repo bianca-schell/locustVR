@@ -6,7 +6,6 @@ import threading
 import uuid
 import sqlite3
 import numpy as np
-import math
 
 from locustvr.experiment import ExperimentBase
 
@@ -36,20 +35,6 @@ def pathDefine(path,ids, params=[]):
     #print(path)
     return path
 
-
-#fct distance between locust position and post
-def distance(pos0, pos1, post):
-    if post == True:
-        dx = pos0['x'] - pos1[0]
-        dy = pos0['y'] - pos1[1]
-        #print ('x+y:',x,y)
-        #print(pos0['x'], dx)
-    else:
-        dx = pos0['x'] - pos1['x']
-        dy = pos0['y'] - pos1['y']
-        #print ('x+y2:',x,y)
-
-    return math.sqrt(dx**2 + dy**2)
 
 
 class MyExperiment(ExperimentBase):
@@ -85,9 +70,10 @@ class MyExperiment(ExperimentBase):
         # event counter (number of times locust position is reset)
         self.cntr = 0
         self.running = True
-        self.locPosition = {'x':0,'y':0,'z':0}
-        
 
+        self.x = 0.0
+        self.y = 0.0
+        self.z = 0.0
 
     # the base class calls this with the current integrated position in the world. the default implementation
     # just calls move_world. However this keeps an origin and can reset it.
@@ -99,12 +85,10 @@ class MyExperiment(ExperimentBase):
 
         # relative position
         self.move_world(x - ox, y - oy, z - oz)
-        global gx,gz,gy
-        gx=x
-        gy=y
-        gz=z 
+        self.x = x
+        self.y = y
+        self.z = z
 
-        self.locPosition = {'x': x, 'y': y, 'z': z }
 
     #def running_exp(self):
         #putting (to start with) 5 experimental conditions
@@ -137,33 +121,14 @@ class MyExperiment(ExperimentBase):
         #opn the csv file and then 'a' for appending the next line, instead of overwriting ('w')
         with open(path+'/results.csv', 'a') as output:
             while 1:
-                #time starts at t = t0=0
                 t = time.time() - t0
-                while t < 3*60:
-                    #control: no post at t< 3 min
-                    pass
 
-
-
-
-
-                for nPost in range(0,10):
-                    #dist is the variable that is the outcome of the function distance
-                    # ':'means take all the values in that dimension which are x and y
-                    dist = distance (self.locPosition, self.postPosition[nPost,:] ,  True)
-                    if dist < 0.5:
-                        print('u reached the post')
-                        print('locPos',self.locPosition)
-                    
-                    print('dist', dist)
-
-                if t> 0.8 and nStimuli < 4:
+                if t> 0.8:
                     nStimuli = nStimuli+1
                     #hier: reset orig
                     self.updateStimuli(nStimuli)
                     #sl_t0 = time.time()
                     #self.cntr = 0
-
    
 
 
@@ -201,8 +166,8 @@ class MyExperiment(ExperimentBase):
                 #jeder 1000. macht etwa 100 werte pro sekunde
 
                 if self.cntr%100000==0:
-                    #output.write('%.8f, %.8f, %.8f,  %d, %.8f, %s\n' % (e.x, e.y, e.z, self.cntr, t, str(nStimuli)))
-                    pass
+                    output.write('%.8f, %.8f, %.8f,  %d, %.8f, %s\n' % (e.x, e.y, e.z, self.cntr, t, str(nStimuli)))
+
 
     def reset_origin(self):
         self.log.info('reset origin')
@@ -277,9 +242,9 @@ class MyExperiment(ExperimentBase):
         for nPost in range(0,10):
             #print((project,self.expTrial,self.replicate,nStimuli))
             cursorProject.execute("Select post"+str(nPost)+" from projects where project = ? and exp = ? and replicate = ? and nStimuli =?",(project,self.expTrial,self.replicate,nStimuli))
+             
+             
             fetched = cursorProject.fetchall()
-
-            data = fetched[0][0]
             #print(fetched)
             #print('fetched in UPDATESTIMULI: ' + str(fetched))
             #data = fetched[0][0]
@@ -377,4 +342,3 @@ if __name__ == '__main__':
 
     
     e.run_forever()
-    

@@ -69,7 +69,7 @@ class MyExperiment(ExperimentBase):
         # set starting position for stimuli
         self.rootPosition = np.zeros((1,2))
         self.postPosition = np.zeros((numberPost,2))
-        self.postDistance = 5.0
+        #self.postDistance = 5.0
 
 
         self.reset_origin()
@@ -84,9 +84,9 @@ class MyExperiment(ExperimentBase):
         self.expId = uuid.uuid4()
         # event counter (number of times locust position is reset)
         self.cntr = 0
+        self.counter=0
         self.running = True
         self.locPosition = {'x':0,'y':0,'z':0}
-        
 
 
     # the base class calls this with the current integrated position in the world. the default implementation
@@ -99,20 +99,27 @@ class MyExperiment(ExperimentBase):
 
         # relative position
         self.move_world(x - ox, y - oy, z - oz)
-        global gx,gz,gy
-        gx=x
-        gy=y
-        gz=z 
-
-        self.locPosition = {'x': x, 'y': y, 'z': z }
-
-    #def running_exp(self):
-        #putting (to start with) 5 experimental conditions
+        #print('x-ox', x - ox)
+        global gx,gy,gz
+        gx=x-ox
+        gy=y-oy
+        gz=z-oz 
+        #print('gx', gx)
+        #self.locPosition = {'x': x-ox, 'y': y-oy, 'z': z-oz }
 
 
+        #*************x - ox is correct  position of the locust!!!*****************
 
 
 
+    def do_resetting_origin(self, x,y,z):
+        #self.locPosition = {'x': 0, 'y': 0, 'z': 0 }
+        with self._olock:
+            if self._origin is None:
+                #self._origin = x, y, z
+                self._origin = 0,0,0
+
+            ox, oy, oz = self._origin
 
     
     def running_writing_csv(self):
@@ -128,71 +135,72 @@ class MyExperiment(ExperimentBase):
         #sl_t0 = time.time()
         
         #lastMessage = True
-        # write output file in specified directory
         nStimuli = 0
+        n=1
         #t0 = time.time()
         #print('time.t', t0)
         path = pathDefine(pathData,self.expId)
         #print('saved in csv in:', path)
         #opn the csv file and then 'a' for appending the next line, instead of overwriting ('w')
         with open(path+'/results.csv', 'a') as output:
-            while 1:
+            #self.locPosition = {'x':0,'y':0,'z':0}
+            #self.publish_state()
+            #print('self state',self._state())
+
+            while nStimuli<=4:
+                self.publish_state()
+                #while 1 vielleicht aendern zu while self.start oder runforever oder variable xy=1, diese  
+                # bei if nStimuli==4 dann auf 0 setzen!!!
                 #time starts at t = t0=0
                 t = time.time() - t0
-                while t < 3*60:
-                    #control: no post at t< 3 min
+                if t < 1.5:
+                    #change to 3*60!!!
+                    #control: no post at t< 3 min 
                     pass
 
+                if t >= 1.5:
+                    #after 3 min without stimulus, locust is reset to origin (0,0) #doesnt work so far!!!
+                    if n==1:
+                        print('Locusts position from dictionary b4 reset', self.locPosition['x'],self.locPosition['y'])
+                        self.locPosition = {'x':0,'y':0,'z':0}
+                        #self.do_resetting_origin()
+                        self.reset_origin()
+                        h=self._state
+                        print('selfstate',h, 'end\n')
+
+                        print('Locusts position from dictionary after reset', self.locPosition['x'],self.locPosition['y'])
+                        n=0
 
 
 
+                    '''for nPost in range(0,10):
+                        #dist is the variable that is the outcome of the function distance
+                        # ':'means take all the values in that dimension which are x and y
+                        dist = distance(self.locPosition, self.postPosition[nPost,:] ,  True)
+                        if dist < 0.5:
+                            print('you reached the post')
+                            print('Locusts position from dictionary', self.locPosition['x'],self.locPosition['y'])
+                            # identical: print('xy coord',gx,gy)                           
+                            print('xy global coord',gx,gy)
+                            self.counter+=1
+                            nStimuli = nStimuli+1
+                            self.updateStimuli(nStimuli)
+                            # sleep time einbauen!!!
+                        while dist > 0.5:
+                            self.cntr+=1
+                            if self.cntr%100==0:
+                                output.write('%.8f, %.8f, %.8f,  %d, %.8f, %s\n' % (gx, gy, gz, self.counter, t, str(nStimuli)))'''
 
-                for nPost in range(0,10):
-                    #dist is the variable that is the outcome of the function distance
-                    # ':'means take all the values in that dimension which are x and y
-                    dist = distance (self.locPosition, self.postPosition[nPost,:] ,  True)
-                    if dist < 0.5:
-                        print('u reached the post')
-                        print('locPos',self.locPosition)
+
+                        #print('distance locust-post', dist)
+
+                #if t> 0.8 and nStimuli < 4:
                     
-                    print('dist', dist)
-
-                if t> 0.8 and nStimuli < 4:
-                    nStimuli = nStimuli+1
-                    #hier: reset orig
-                    self.updateStimuli(nStimuli)
-                    #sl_t0 = time.time()
-                    #self.cntr = 0
-
-   
+                    
 
 
-
-                #WO IST POST POSITION????????????????????????
-                #hier if e.x,y,z = position des posts, 
-                    #reset origin
-                    #counter+=1
-                    #neuen post aufrufen
-                    # kurze time.sleep
-                    #updateStimuli aufrufen
-
-
-
-
-
-
-
-
-                #while t*60*60<1: 
-                #print pos in terminal:
-               
-                #print('coordinates:' e.x, e.y, e.z)
-                #t = time.time() - t0
                 self.cntr+=1
-                #b=round(t,4)
-                #print(b)
-
-                #print pos in csv 
+                #print pos in csv :
                 #better would be: 1/200 sec
                 #if b%0.2000==0:
                 #funktioniert nicht. dann gibt er an bspw 0.2 s 10 werte aus, bei 0,4 s ebenfalls usw
@@ -200,14 +208,16 @@ class MyExperiment(ExperimentBase):
                 #ODER INCREMENT mit +1/200 und dann werte kleiner /groesser als
                 #jeder 1000. macht etwa 100 werte pro sekunde
 
-                if self.cntr%100000==0:
-                    #output.write('%.8f, %.8f, %.8f,  %d, %.8f, %s\n' % (e.x, e.y, e.z, self.cntr, t, str(nStimuli)))
-                    pass
+                if self.cntr%1000==0:
+                    output.write('%.8f, %.8f, %.8f,  %d, %.8f, %s\n' % (gx, gy, gz, self.counter, t, str(nStimuli)))
+                    #output.write('%.8f, %.8f, %.8f,  %d, %.8f, %s\n' % (self.locPosition['x'],self.locPosition['y'],self.locPosition['z'], self.counter, t, str(nStimuli)))
+            
 
     def reset_origin(self):
         self.log.info('reset origin')
         with self._olock:
             self._origin = None
+
     
     def getExperiment(self):
                 
@@ -284,7 +294,7 @@ class MyExperiment(ExperimentBase):
             #print('fetched in UPDATESTIMULI: ' + str(fetched))
             #data = fetched[0][0]
             #print(data)
-            '''if data == 'None':
+            if data == 'None':
                 #Should be the name of the blender file
                 self.postPosition[nPost,:] = [1000,1000]
             else:
@@ -292,7 +302,7 @@ class MyExperiment(ExperimentBase):
                 print(dictData['position'])
                 self.postPosition[nPost,:] = dictData['position']
                 self.postDistance = dictData['distance']
-            #self.ds_proxy.move_node('Cylinder' + str(nPost), self.postPosition[nPost,0],  self.postPosition[nPost,1], 0)'''
+            #self.ds_proxy.move_node('Cylinder' + str(nPost), self.postPosition[nPost,0],  self.postPosition[nPost,1], 0)
             #print(self.postPosition)
         
         # close connection
@@ -331,7 +341,7 @@ class MyExperiment(ExperimentBase):
         try:
             while 1:
                 time.sleep(0.1)
-                # send state to motif to record
+                # send state to motif to record (motif recording system homepage)
                 self.publish_state()
                 #print('koordinrunfor: ', e._origin, str(e._olock))
 
@@ -365,13 +375,16 @@ if __name__ == '__main__':
     e.start(record=False)
     #e.experiment_start()
     #e.writeInDb()
+    #uncomment write in Db so it writes!!!
     
+
+
     e.running_writing_csv()
     #print('koord: ',str(e._origin), e._origin)
     #e.printing_coordinates()
     
 
-    #change to true for recording, atm too much rubbish recording!******************
+    #change to true for recording, atm too much rubbish recording!!!******************
     #e.getExperiment
 
 

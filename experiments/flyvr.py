@@ -39,7 +39,7 @@ def pathDefine(path,ids, params=[]):
 
 
 
-
+#pos0 is fly's pos, pos1 post position, post=true/false
 def distance(pos0, pos1, post):
     if post == True:
         dx = pos0['x'] - pos1[0]
@@ -212,6 +212,7 @@ class MyExperiment(object):
                         self.cntr += 1
                         sl_t0 = time.time()
                         break
+                # 
                 if distance(pos, self.start_position, False) > self.postDistance:
                     self.observer.reset_to(**self.start_position)
                     self.cntr += 1

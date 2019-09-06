@@ -131,7 +131,6 @@ class MyExperiment(ExperimentBase):
             #self.publish_state()
             #print('self state',self._state())
             #have 5 experiments:
-            
             while nStimuli<=4:
                 self.publish_state()
                 #while 1 vielleicht aendern zu while self.start oder runforever oder variable xy=1, diese  
@@ -147,11 +146,14 @@ class MyExperiment(ExperimentBase):
                     self.updateStimuli(nStimuli)
                     firstinitialized=True
                     print('nStimuli:', nStimuli)
+                    print( ' no post condition, control')
                     write=True
                     #print('LocPosition after reset:',self.locPosition['x'])
                     #print('1 postPosition', self.postPosition[0,:])
                     print('************************************************************************')
                     print(' ')
+                    #unveraenderliche variable t_exp
+                    t_exp=t 
                         
                 if t>2:
                     #change to 5*60!!!
@@ -168,45 +170,57 @@ class MyExperiment(ExperimentBase):
                             print('nStimuli:', nStimuli)
                             self.updateStimuli(nStimuli)
                             self.reset_origin()
+                            
                             #here while as sleep time until reset has been successfully done:
                             while self.locPosition['x'] != 0.0 and self.locPosition['y']!=0:
                                 pass
                                 #print('wait for reset')
                             output.write('%.8f, %.8f, %.8f,  %d, %.8f, %s\n' % (self.locPosition['x'],self.locPosition['y'],self.locPosition['z'], self.counter, t, str(nStimuli)))
-            
-                            print('Locusts position after reset', self.locPosition['x'],self.locPosition['y'])
-                            print('postPosition', self.postPosition[0,:])
+                            t_exp=t
+                            #print('+++++++++++start von texp', t_exp, 't=',t)
+                            print('*Locusts position after reset*', self.locPosition['x'],self.locPosition['y'])
+                            print('*new post Position*', self.postPosition[0,:])
                             reached=False
 
 
 
-                        if dist < 4.93 and reached == False :
-                            #change to dist < 0.5!!! b4 4.85
-                            write=True
-                            print('Locusts position at reaching', self.locPosition['x'],self.locPosition['y'])
-                            print('*******************************stimulus',nStimuli,':you reached the post***********************')
+                        if t > t_exp+10:
+                            #change t_exp+10*60
+                            print('Locusts position at reaching t_exp', self.locPosition['x'],self.locPosition['y'])
+                            print('*******************************stimulus',nStimuli,': times up***********************')
+                            print('time has reached t_exp of:',((t_exp)), 'min',  't=',t)
                             print('************************************************************************')
                             print(' ')
-                            #3 seconds no new stimulus, continously resetting org: (change to 3!!!)
+                            reached=True
+
+                        if dist < 4.93 and reached == False:
+                            #change to dist < 0.5!!! b4 4.85 change to t_exp +10*60
+                            write=True
+                            print('Locusts position at reaching', self.locPosition['x'],self.locPosition['y'])
+                            print('*******************************stimulus',nStimuli,':you reached the post ***********************')
+                            print('************************************************************************')
+                            print(' ')
                             reached=True
                         
 
 
-                        #remove!!!!!next two lines
+                        #remove!!!!!next two lines / (for checking end of experiment, entering stim4 immed)
 
-                        self.updateStimuli(4)
-                        nStimuli=4   
+                        #self.updateStimuli(4)
+                        #nStimuli=4   
                         #!!!!!
                         if nStimuli == 4:
                             #5 min of control at the end
                             if stimfourisreached == True:
                                 t_beginning_of_stim4 = t
+                                print('**********no post condition control**********')
                                 stimfourisreached = False
-                                print('stim4 starts at t=',t_beginning_of_stim4)    
-                            if t > (t_beginning_of_stim4 + 2):
+                                #print('stim4 starts at t=',t_beginning_of_stim4)    
+                            if t > (t_beginning_of_stim4 + 5):
                                 #change to 5*60!!!
                                 #print(t)
                                 print('Experiment completed')
+                                #print( 't',t,'stim4 beginning', t_beginning_of_stim4)
                                 sys.exit()
 
 
@@ -309,7 +323,7 @@ class MyExperiment(ExperimentBase):
                 self.postPosition[nPost,:] = [1000,1000]
             else:
                 dictData = eval(data)
-                print('position from dictData',dictData['position'])
+                print('post position',dictData['position'])
                 self.postPosition[nPost,:] = dictData['position']
                 self.postDistance = dictData['distance']
         

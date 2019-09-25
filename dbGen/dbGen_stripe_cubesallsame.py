@@ -9,7 +9,7 @@ expDB = 'stripe_flyVRExperiments.db'
 project = 'DecisionGeometry'
 
 nPosts = 10
-nCubes = 2
+nCubes = 3
 cube0=0
 cube1=1
 cube2=2
@@ -71,18 +71,16 @@ def dataController():
 		dataStimuli = 'None'
 		data.append(str(dataStimuli))
 	
-	for l in range(0,nCubes):
+		'''for l in range(0,nCubes):
 		backgroundStimuli = 'None'
 		backgrounds.append(str(backgroundStimuli))
 		#or:???
-		'''for l in range(0,nCubes):
+		for l in range(0,nCubes):
 		backgroundStimuli = 'None'
 		data.append(str(dataStimuli))'''
 	
 
-
-
-	return data , backgrounds
+	return data 
 
 
 
@@ -96,7 +94,7 @@ def defineStimuli(expType, nSwitch, nReplicates=2, N=2, d=1.0, ang=np.pi/6, pick
 	dataReplicates = []
 	dataControl = dataController()
 
-	if expType == 'nPosts':
+	'''if expType == 'nPosts':
 		data = []
 		# define stimuli nSwitch-2 times since we have two control stimuli - one in the beginning; other in the end
 		for k in range(0,nSwitch-2):
@@ -114,9 +112,10 @@ def defineStimuli(expType, nSwitch, nReplicates=2, N=2, d=1.0, ang=np.pi/6, pick
 					dataStimuli = {'position' : (x,y), 'distance' : r, 'angle' : 2*np.pi*ang / (N*6)}
 				else:
 					dataStimuli = 'None'
-				data[-1].append(str(dataStimuli))	
-	elif expType == 'angles':
+				data[-1].append(str(dataStimuli))'''	
+	if expType == 'angles':
 		data = []
+		#randNumber = np.random.randint(0,4)
 		# define stimuli nSwitch-2 times since we have two control stimuli - one in the beginning; other in the end
 		for k in range(0,nSwitch-2):
 			data.append([])
@@ -127,9 +126,12 @@ def defineStimuli(expType, nSwitch, nReplicates=2, N=2, d=1.0, ang=np.pi/6, pick
 			while ang in picked or ang < 0.0:
 				ang = np.random.randint(3)
 			picked.append(ang)
-
+			randNumber = np.random.randint(0,4)
 			for j in range(0,nPosts):
-				if j < 4:
+				
+				if j == randNumber:
+
+					# here j < 4 creates 4 posts at experiment!!!
 
 					#another if none and if background is the same color then --> none
 					r = d
@@ -138,9 +140,25 @@ def defineStimuli(expType, nSwitch, nReplicates=2, N=2, d=1.0, ang=np.pi/6, pick
 					x = r*np.cos(theta)
 					y = r*np.sin(theta)
 					dataStimuli = {'position' : (x,y), 'distance' : r, 'angle' : angle}
+					#excluding cube to be equal color as cylinder
+					for h in range(0,nCubes):
+						if h == randNumber:
+							globals()['cube' + str(randNumber)] = 'None'
+						else:
+							globals()['cube' + str(randNumber)] = randNumber
+
 				else:
 					dataStimuli = 'None'
 				data[-1].append(str(dataStimuli))
+				#here it needs to  save the status of the cube in a dictionary (?)
+			
+			
+				
+
+
+
+
+
 	
 	# permute replicates before adding them to the database
 	# sandwich permutations between controls
@@ -161,13 +179,14 @@ def writeStimuli(cursor,projects,exp,nReplicate,tExp,tSwitch,nSwitch,data):
 
 #***in values insert str(....backgrounds grey, white, black[][0-2])
 # insert color information of posts: exclude same color post/background 
+	#print("HEHEHEHEHEHEHEHE", data[0][0][7])
 
 
 	for perm in range(0, nReplicate):
 		for k in range(0, nSwitch):
 			values = [projects, exp, perm, tExp, tSwitch, nSwitch, k, str(data[perm][k][0]), str(data[perm][k][1]), str(data[perm][k][2]), str(data[perm][k][3]), str(data[perm][k][4]), str(data[perm][k][5]), str(data[perm][k][6]), str(data[perm][k][7]), str(data[perm][k][8]), str(data[perm][k][9]), cube0, cube1, cube2]
 			cursor.execute("INSERT INTO projects VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",values)
-
+			#cursor.execute("INSERT INTO projects VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", values)
 
 # fill database created by FirstGen
 def main():
@@ -199,13 +218,13 @@ def main():
 	d = 1.0
 	ang = np.pi/6
 
-	if expType == 'nPosts':
+	'''if expType == 'nPosts':
 		for d in distances:
 			for ang in range(1,7):
 				# write your new stimuli
 				exp += 1
 				data = defineStimuli(expType, nSwitch, nReplicates, N=N, d=d, ang=ang)
-				writeStimuli(cursorProject, project, exp, nReplicate = nReplicates, tExp = tExp, tSwitch = tSwitch, nSwitch = nSwitch, data=data)
+				writeStimuli(cursorProject, project, exp, nReplicate = nReplicates, tExp = tExp, tSwitch = tSwitch, nSwitch = nSwitch, data=data)'''
 	if expType == 'angles':
 		for N in posts:
 			for d in distances:
@@ -214,6 +233,7 @@ def main():
 				exp += 1
 				data = defineStimuli(expType, nSwitch, nReplicates, N=N, d=d, ang=ang, picked=picked_angs)
 				writeStimuli(cursorProject, project, exp, nReplicate = nReplicates, tExp = tExp, tSwitch = tSwitch, nSwitch = nSwitch, data=data)
+
 
 
 	# commit and close connection

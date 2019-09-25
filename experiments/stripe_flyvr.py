@@ -249,7 +249,7 @@ class MyExperiment(object):
             # prox move node puts cube at 0,0 like this??
         
 
-
+        #nPost is equivalent to nBackground
 
 
 
@@ -270,6 +270,20 @@ class MyExperiment(object):
                 self.postDistance = dictData['distance']
             self.ds_proxy.move_node('Cylinder' + str(nPost), self.postPosition[nPost,0],  self.postPosition[nPost,1], 0)
             #print(self.postPosition)
+        
+        for nBackground in range(0,3):
+            #print((project,self.expTrial,self.replicate,nStimuli))
+            cursorProject.execute("Select background"+str(nBackground)+" from projects where project = ? and exp = ? and replicate = ? and nStimuli =?",(project,self.expTrial,self.replicate,nStimuli))
+            fetched = cursorProject.fetchall()
+
+            data = fetched[0][0]
+
+
+            if ...... == 'None':
+                self.postPosition[nPost,:] = [1000,1000]
+            else:
+                self.postPosition[nPost,:] = [0,0]
+            self.ds_proxy.move_node('Cube' + str(nPost), self.postPosition[nPost,0],  self.postPosition[nPost,1], 0)
         
         # close connection
         conn.close()

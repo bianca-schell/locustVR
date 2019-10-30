@@ -1,0 +1,71 @@
+obj Cylinder3
+
+Type of Cylinder3 is MESH
+exporting object Cylinder3
+mesh_object is Cylinder.015
+mesh Cylinder3 with material Material.016
+vertexes reduced from 308 to 192
+faces 92
+WARNING update material animation not yet supported
+-----------------------------------------
+vertex groups False False 
+obj Cylinder2
+
+Type of Cylinder2 is MESH
+exporting object Cylinder2
+mesh_object is Cylinder.014
+mesh Cylinder2 with material Material.015
+vertexes reduced from 308 to 192
+faces 92
+WARNING update material animation not yet supported
+-----------------------------------------
+vertex groups False False 
+obj Cylinder1
+
+Type of Cylinder1 is MESH
+exporting object Cylinder1
+mesh_object is Cylinder.013
+mesh Cylinder1 with material Material.014
+vertexes reduced from 308 to 192
+faces 92
+WARNING update material animation not yet supported
+-----------------------------------------
+vertex groups False False 
+obj Cylinder0
+
+Type of Cylinder0 is MESH
+exporting object Cylinder0
+mesh_object is Cylinder.012
+mesh Cylinder0 with material Material.013
+vertexes reduced from 308 to 192
+faces 92
+WARNING update material animation not yet supported
+-----------------------------------------
+vertex groups False False 
+obj Cylinder0.0
+obj Cylinder1.0
+obj Cylinder5
+obj Cylinder6
+obj Cylinder7
+obj Cylinder8
+obj Cylinder9
+obj Cube
+
+Type of Cube is MESH
+exporting object Cube
+mesh_object is Cube
+mesh Cube with material Material
+vertexes 24
+faces 6
+WARNING update material animation not yet supported
+--------------------------------
+vertex groups False False 
+geode GeodeCylinder.015
+geode GeodeCylinder.014
+geode GeodeCylinder.013
+geode GeodeCylinder.012
+geode GeodeCube
+write file to /home/loopbio/Documents/locustVR/stimulus/ten_post_stimulus_diffsize4.osgt
+error while trying to copy file black.png to /home/loopbio/Documents/locustVR/stimulus/textures: '/home/loopbio/Documents/locustVR/stimulus/textures/black.png' and '/home/loopbio/Documents/locustVR/stimulus/textures/black.png' are the same file
+error while trying to copy file white.png to /home/loopbio/Documents/locustVR/stimulus/textures: '/home/loopbio/Documents/locustVR/stimulus/textures/white.png' and '/home/loopbio/Documents/locustVR/stimulus/textures/white.png' are the same file
+Check log file /home/loopbio/Documents/locustVR/stimulus/ten_post_stimulus_diffsize4.log

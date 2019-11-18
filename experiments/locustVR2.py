@@ -151,8 +151,8 @@ class MyExperiment(ExperimentBase):
                     #unveraenderliche variable t_exp
                      
                         
-                if t>5:
-                    #change to 5*60!!!
+                if t>0.1*60:
+                    #change to 1*60!!!
                     for nPost in range(0,10):
                         #dist is the variable that is the outcome of the function distance
                         # ':'means take all the values in that dimension which are x and y
@@ -162,9 +162,11 @@ class MyExperiment(ExperimentBase):
                             #distanz stimmt nicht. der post ist nicht 5 vom locust entfernt!!!
                         #bis hier alles gut dann self.origin fkt nicht*********************************************  
                         
-                            if self.rand%1000000==0:
-                                print('min:', t/60)
-                                print('locpos', self.locPosition['x'],self.locPosition['y'])
+                            if self.rand%100000==0:
+                                print('min_absolut:', t/60, 'time spend on stimulus', (t-t_exp))
+                                if self.rand%500000==0:
+                                    print('locpos', self.locPosition['x'],self.locPosition['y'])
+                                #print('locpos', self.locPosition)
 
 
 
@@ -199,7 +201,7 @@ class MyExperiment(ExperimentBase):
                             print('*new post Position*', self.postPosition[0,:])
                             reached=False
 
-                        if dist < 0.5 and reached == False:
+                        if dist < 0.58 and reached == False:
                             #change to post_radius/2!!! b4 4.85 change to t_exp +10*60
                             write=True
                             print('Locusts position at reaching', self.locPosition['x'],self.locPosition['y'])
@@ -212,20 +214,20 @@ class MyExperiment(ExperimentBase):
                             t_exp_trial=t
 
                         #ending at dist/t expiry, locusts that dont do the job very well:
-                        if dist > 6 and dist < 900:
+                        if dist > 5.8 and dist < 900:
                             #distance locust can max. reach without reaching post
-                            print('Locust has reached a distance of > 6')
+                            print('Locust has reached a distance of > 4')
                             print('************************************************************************')
                             print(' ')
                             self.counter += 1
                             reached=True
                             t_exp_trial=t
 
-                        if t > t_exp_trial+5*60:
-                            #change t_exp_trial +5*60, time locust can spend to reach one post
+                        if t > t_exp_trial+8.5*60:
+                            #7*60: sometimes just before reaching post, time ends, time locust can spend to reach one post
                             print('Locusts position at reaching t_exp', self.locPosition['x'],self.locPosition['y'])
                             print('*******************************stimulus',nStimuli,'trial:',self.counter,': times up***********************')
-                            print('time for trial has expired:',((t-t_exp_trial)), 'min',  't=',t)
+                            print('time for trial has expired:',((t-t_exp_trial)/60), 'min',  't=',t)
                             print('************************************************************************')
                             print(' ')
                             self.counter += 1
@@ -236,7 +238,7 @@ class MyExperiment(ExperimentBase):
 
                         
 
-                        if t> t_exp+5*60:
+                        if t> t_exp+34*60:
                             #change to 10*60,  each stimulus should be repeated after reaching for ten min
                             
                             print('Locusts position at reaching t_exp', self.locPosition['x'],self.locPosition['y'])
@@ -267,7 +269,7 @@ class MyExperiment(ExperimentBase):
                                 print('**********no post condition control**********')
                                 stimfourisreached = False
                                 #print('stim4 starts at t=',t_beginning_of_stim4)    
-                            if t > (t_beginning_of_stim4 + 5):
+                            if t > (t_beginning_of_stim4 + 5*60):
                                 #change to 5*60!!!
                                 print('total experiment time',t)
                                 print('Experiment completed')
@@ -379,6 +381,8 @@ class MyExperiment(ExperimentBase):
                 self.postDistance = dictData['distance']
            
             self.move_node('Cylinder' + str(nPost), self.postPosition[nPost,0],  self.postPosition[nPost,1], 0)
+
+            #self.move_node('Cylinder' + str(nPost), -2,  -2, 0)
         # close connection
         conn.close()
 
@@ -419,7 +423,7 @@ if __name__ == '__main__':
 
     e = MyExperiment.new_osg(debug=args.debug_display)
     e.start(record=False)
-    #e.writeInDb()
+    e.writeInDb()
     #uncomment write in Db so it writes!!! record=True so it records!!!
     
 

@@ -1,0 +1,240 @@
+obj Spot.002
+
+Type of Spot.002 is LAMP
+obj Sony1.001
+
+Type of Sony1.001 is MESH
+exporting object Sony1.001
+mesh_object is Model.006
+mesh Sony1.001 with material material0.003
+vertexes reduced from 599997 to 112938
+faces 199999
+uvs channels 1 - dict_keys(['DiffuseUV'])
+WARNING update material animation not yet supported
+------------------------------------------
+vertex groups False False 
+obj Sony1
+
+Type of Sony1 is MESH
+exporting object Sony1
+mesh_object is Model.005
+mesh Sony1 with material material0.003
+vertexes reduced from 599997 to 112938
+faces 199999
+uvs channels 1 - dict_keys(['DiffuseUV'])
+--------------------------------------
+vertex groups False False 
+obj Spot.001
+obj Hemi
+
+Type of Hemi is LAMP
+obj Sphere
+
+Type of Sphere is MESH
+exporting object Sphere
+mesh_object is Sphere.001
+mesh Sphere with material Material.002
+vertexes 992
+faces 256
+WARNING update material animation not yet supported
+--------------------------------------
+vertex groups False False 
+obj Spot
+
+Type of Spot is LAMP
+obj Plane
+
+Type of Plane is MESH
+curve.data_path modifiers["Ocean"].time 0 modifiers["Ocean"].time
+exporting object Plane
+mesh_object is Plane.001
+mesh Plane with material Material.001
+vertexes 4
+faces 1
+WARNING update material animation not yet supported
+-------------------------------------
+vertex groups False False 
+
+Type of Plane.001 is MESH
+exporting object Plane.001
+mesh_object is Plane
+mesh Plane.001 with material Material.004
+vertexes reduced from 9604 to 2500
+faces 2401
+uvs channels 1 - dict_keys(['UVMap'])
+WARNING update material animation not yet supported
+-----------------------------------------
+vertex groups False False 
+obj Plane.001
+obj Cube
+
+Type of Cube is MESH
+exporting object Cube
+mesh_object is Cube
+mesh Cube with material Material
+vertexes 24
+faces 6
+WARNING update material animation not yet supported
+WARNING the texture <bpy_struct, MaterialTextureSlot("Tex")> has no Image, skip it
+--------------------------------
+vertex groups False False 
+obj Lamp
+
+Type of Lamp is LAMP
+obj Camera
+
+Type of Camera is CAMERA
+obj Circle
+
+Type of Circle is MESH
+exporting object Circle
+mesh_object is Plane.004
+mesh Circle with material Material.008
+vertexes reduced from 65536 to 16641
+faces 16384
+WARNING update material animation not yet supported
+--------------------------------------
+vertex groups False False 
+obj iPad
+
+Type of iPad is MESH
+exporting object iPad
+mesh_object is Model.001
+mesh iPad with material Material.003
+vertexes 4
+faces 1
+WARNING group has no vertexes, skip it, if really unsued you should clean it
+uvs channels 1 - dict_keys(['DiffuseUV'])
+WARNING update material animation not yet supported
+------------------------------------
+vertex groups False False 
+obj Box
+
+Type of Box is MESH
+exporting object Box
+mesh_object is Model.003
+mesh Box with material Material.009
+vertexes reduced from 54135 to 10153
+faces 18045
+uvs channels 1 - dict_keys(['DiffuseUV'])
+WARNING update material animation not yet supported
+-----------------------------------
+vertex groups False False 
+
+Type of Circle.001 is MESH
+exporting object Circle.001
+mesh_object is Plane.002
+mesh Circle.001 with material Material.006
+vertexes reduced from 65536 to 16641
+faces 16384
+WARNING update material animation not yet supported
+------------------------------------------
+vertex groups False False 
+
+Type of iPad.001 is MESH
+exporting object iPad.001
+mesh_object is Model.002
+mesh iPad.001 with material Material.007
+vertexes 4
+faces 1
+WARNING group has no vertexes, skip it, if really unsued you should clean it
+uvs channels 1 - dict_keys(['DiffuseUV'])
+WARNING update material animation not yet supported
+----------------------------------------
+vertex groups False False 
+obj Circle.001
+obj iPad.001
+obj Dascyllus1
+
+Type of Dascyllus1 is MESH
+exporting object Dascyllus1
+mesh_object is Mesh
+mesh Dascyllus1 with material Material.012
+vertexes reduced from 20352 to 3834
+faces 6784
+uvs channels 1 - dict_keys(['UVMap'])
+WARNING update material animation not yet supported
+------------------------------------------
+vertex groups False False 
+obj Dascyllus2
+
+Type of Dascyllus2 is MESH
+exporting object Dascyllus2
+mesh_object is Mesh.001
+mesh Dascyllus2 with material Material.011
+vertexes reduced from 20352 to 3834
+faces 6784
+uvs channels 1 - dict_keys(['UVMap'])
+WARNING update material animation not yet supported
+------------------------------------------
+vertex groups False False 
+obj Dascyllus3
+
+Type of Dascyllus3 is MESH
+exporting object Dascyllus3
+mesh_object is Mesh.003
+mesh Dascyllus3 with material Material.013
+vertexes reduced from 20352 to 3834
+faces 6784
+uvs channels 1 - dict_keys(['UVMap'])
+WARNING update material animation not yet supported
+------------------------------------------
+vertex groups False False 
+obj Dascyllus4
+
+Type of Dascyllus4 is MESH
+exporting object Dascyllus4
+mesh_object is Mesh.002
+mesh Dascyllus4 with material Material.014
+vertexes reduced from 20352 to 3834
+faces 6784
+uvs channels 1 - dict_keys(['UVMap'])
+WARNING update material animation not yet supported
+------------------------------------------
+vertex groups False False 
+obj Dascyllus5
+
+Type of Dascyllus5 is MESH
+exporting object Dascyllus5
+mesh_object is Mesh.004
+mesh Dascyllus5 with material Material.015
+vertexes reduced from 20352 to 3834
+faces 6784
+uvs channels 1 - dict_keys(['UVMap'])
+WARNING update material animation not yet supported
+------------------------------------------
+vertex groups False False 
+obj Coral
+
+Type of Coral is MESH
+exporting object Coral
+mesh_object is Model.004
+mesh Coral with material Material.010
+vertexes reduced from 599994 to 127030
+faces 199998
+uvs channels 1 - dict_keys(['DiffuseUV'])
+WARNING update material animation not yet supported
+-------------------------------------
+vertex groups False False 
+obj Camera.001
+
+Type of Camera.001 is CAMERA
+geode GeodeModel.006
+geode GeodeModel.005
+geode GeodeSphere.001
+geode GeodePlane
+geode GeodeCube
+geode GeodePlane.004
+geode GeodeModel.001
+geode GeodePlane.002
+geode GeodeModel.002
+geode GeodeMesh
+geode GeodeMesh.001
+geode GeodeMesh.003
+geode GeodeMesh.002
+geode GeodeMesh.004
+geode GeodeModel.004
+write file to /home/loopbio/Documents/locustVR/stimulus/setup2.osgt
+file /home/loopbio/Downloads/2q0j4g2.png not available
+file /home/loopbio/Downloads/2q0j4g2.png not available
+Check log file /home/loopbio/Documents/locustVR/stimulus/setup2.log

@@ -1,0 +1,52 @@
+obj Cylinder2
+
+Type of Cylinder2 is MESH
+exporting object Cylinder2
+mesh_object is Cylinder.005
+mesh Cylinder2 with material Material.002
+vertexes reduced from 308 to 192
+faces 92
+WARNING update material animation not yet supported
+-----------------------------------------
+vertex groups False False 
+obj Cylinder1
+
+Type of Cylinder1 is MESH
+exporting object Cylinder1
+mesh_object is Cylinder.004
+mesh Cylinder1 with material Material.002
+vertexes reduced from 308 to 192
+faces 92
+-----------------------------------------
+vertex groups False False 
+obj Cylinder0
+
+Type of Cylinder0 is MESH
+exporting object Cylinder0
+mesh_object is Cylinder.003
+mesh Cylinder0 with material Material.002
+vertexes reduced from 308 to 192
+faces 92
+-----------------------------------------
+vertex groups False False 
+obj Cylinder2_
+obj Cylinder1_
+obj Cylinder0_
+obj Cube
+
+Type of Cube is MESH
+exporting object Cube
+mesh_object is Cube.001
+mesh Cube with material Material.001
+vertexes 24
+faces 6
+WARNING update material animation not yet supported
+------------------------------------
+vertex groups False False 
+geode GeodeCylinder.005
+geode GeodeCylinder.004
+geode GeodeCylinder.003
+geode GeodeCube.001
+write file to /home/bianca/Documents/github/locustVR/stimulus/3posts_20cm_radius_z_at_0.osgt
+copy file /home/bianca/Documents/github/zebraVR/stimulus/textures/black.png to /home/bianca/Documents/github/locustVR/stimulus/textures/black.png
+Check log file /home/bianca/Documents/github/locustVR/stimulus/3posts_20cm_radius_z_at_0.log

@@ -3,18 +3,18 @@ import itertools
 import numpy as np
 from random import shuffle
 
-projectDB = 'locustProjects.db'
-expDB = 'locustExperiments.db'
+projectDB = 'locustProjects_2post_2m_deg30_45_60.db'
+expDB = 'locustExperiments_2post_2m_deg30_45_60.db'
 
 project = 'DecisionGeometry'
 
-nPosts = 10
+nPosts = 3	#10
 
-posts = range(1,2)
+posts = range(2,3)  #1,2 : 1 post, 2,3 two post
 posts = list(itertools.chain.from_iterable(itertools.repeat(x, 10) for x in posts))
-distances = [5.0]
+distances = [2.0]	#in meter
 start_ang_split = 8
-angles2 = [np.pi/3, 7*np.pi/18, np.pi]
+angles2 = [np.pi/6, np.pi/4, np.pi/3]			#degree: 60, 70, 180:  [np.pi/3, 7*np.pi/18, np.pi]
 angles3 = [5*np.pi/18, 5*np.pi/18, 2*np.pi/3]
 
 # creates empty database
@@ -30,10 +30,10 @@ def FirstGen():
 										nSwitch integer,
 										nStimuli integer, 
 										post0 text,post1 text, 
-										post2 text,post3 text, 
-										post4 text,post5 text, 
-										post6 text,post7 text, 
-										post8 text,post9 text)''')
+										post2 text)''')	#,post3 text, 
+										#post4 text,post5 text, 
+										#post6 text,post7 text, 
+										#post8 text,post9 text)''')
 	# commit and close connection
 	conn.commit()
 	conn.close()
@@ -53,10 +53,26 @@ def FirstGen():
 
 
 # creates a no post  control
-def dataController():
+'''def dataController():
 	data=[]
 	for j in range(0,nPosts):
 		dataStimuli = 'None'
+		data.append(str(dataStimuli))
+	return data '''
+
+
+# creates a single post fixation control
+def dataController():
+	data=[]
+	for j in range(0,nPosts):
+		if j == 0:
+			r = distances[0]
+			theta = 2*np.pi*(np.random.randint(6)+1) / 6
+			x = r*np.cos(theta)
+			y = r*np.sin(theta)
+			dataStimuli = {'position' : (x,y), 'distance' : r, 'angle' : theta}
+		else:
+			dataStimuli = 'None'
 		data.append(str(dataStimuli))
 	return data 
 
@@ -131,8 +147,8 @@ def writeStimuli(cursor,projects,exp,nReplicate,tExp,tSwitch,nSwitch,data):
 
 	for perm in range(0, nReplicate):
 		for k in range(0, nSwitch):
-			values = [projects, exp, perm, tExp, tSwitch, nSwitch, k, str(data[perm][k][0]), str(data[perm][k][1]), str(data[perm][k][2]), str(data[perm][k][3]), str(data[perm][k][4]), str(data[perm][k][5]), str(data[perm][k][6]), str(data[perm][k][7]), str(data[perm][k][8]), str(data[perm][k][9])]
-			cursor.execute("INSERT INTO projects VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",values)
+			values = [projects, exp, perm, tExp, tSwitch, nSwitch, k, str(data[perm][k][0]), str(data[perm][k][1]), str(data[perm][k][2])]#, str(data[perm][k][3]), str(data[perm][k][4]), str(data[perm][k][5]), str(data[perm][k][6]), str(data[perm][k][7]), str(data[perm][k][8]), str(data[perm][k][9])]
+			cursor.execute("INSERT INTO projects VALUES (?,?,?,?,?,?,?,?,?,?)",values) #,?,?,?,?,?,?,?
 
 
 # fill database created by FirstGen

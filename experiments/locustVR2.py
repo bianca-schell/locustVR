@@ -223,7 +223,7 @@ class MyExperiment(ExperimentBase):
                             reached=True
                             t_exp_trial=t
 
-                        if t > t_exp_trial+8.5*60:
+                        if t > t_exp_trial+0.5*60:
                             #7*60: sometimes just before reaching post, time ends, time locust can spend to reach one post
                             print('Locusts position at reaching t_exp', self.locPosition['x'],self.locPosition['y'])
                             print('*******************************stimulus',nStimuli,'trial:',self.counter,': times up***********************')
@@ -238,7 +238,7 @@ class MyExperiment(ExperimentBase):
 
                         
 
-                        if t> t_exp+34*60:
+                        if t> t_exp+1*60:
                             #change to 10*60,  each stimulus should be repeated after reaching for ten min
                             
                             print('Locusts position at reaching t_exp', self.locPosition['x'],self.locPosition['y'])

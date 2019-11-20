@@ -54,7 +54,7 @@ class MyExperiment(ExperimentBase):
         self._origin = None
         self._olock = threading.Lock()
 
-        self.load_osg('/home/loopbio/Documents/locustVR/stimulus/3posts_20cm_radius_z_at_0.osgt')   #ten_post_stimulus.osgt 3posts_20cm_radius_z_at_50.osgt
+        self.load_osg('/home/loopbio/Documents/locustVR/stimulus/3posts_20cm_radius_z_at_50.osgt')   #ten_post_stimulus.osgt 3posts_20cm_radius_z_at_50.osgt   3posts_20cm_radius_z_at_0.osgt
         self.expTrial = -1
         self.replicate = -1
         self.tSwitch = 0
@@ -151,7 +151,7 @@ class MyExperiment(ExperimentBase):
                     #unveraenderliche variable t_exp
                      
                         
-                if t>0.5*60:
+                if t>5*60:
                     #change to 8*60!!! first time in the vr they take some time to settle
                     for nPost in range(0,3):
                         #dist is the variable that is the outcome of the function distance
@@ -214,7 +214,7 @@ class MyExperiment(ExperimentBase):
                             print('*new post Position*', self.postPosition[0,:])
                             reached=False
 
-                        if dist < (1.3*Radius_post)  and reached == False:
+                        if dist < (1.1*Radius_post)  and reached == False:
                             #1.5 is too far
                             #change to post_radius/2 plus some xtra: otherwise: artifact!!! b4 4.85 change to t_exp +10*60
                             write=True
@@ -398,7 +398,7 @@ class MyExperiment(ExperimentBase):
                 self.postPosition[nPost,:] = dictData['position']
                 self.postDistance = dictData['distance']
            
-            self.move_node('Cylinder' + str(nPost), self.postPosition[nPost,0],  self.postPosition[nPost,1], 0)
+            self.move_node('Cylinder' + str(nPost), self.postPosition[nPost,0],  self.postPosition[nPost,1], 50)
 
             #self.move_node('Cylinder' + str(nPost), -2,  -2, 0)
         # close connection

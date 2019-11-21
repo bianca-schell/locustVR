@@ -163,7 +163,7 @@ class MyExperiment(ExperimentBase):
                         #bis hier alles gut dann self.origin fkt nicht*********************************************  
                         
                             if self.rand%100000==0:
-                                print('min_absolut:', t/60, 'time spend on stimulus', (t-t_exp))
+                                print('min_absolut:', t/60, 'time spend on stimulus', (t-t_exp)/60)
                                 
                                 if self.rand%500000==0:
                                     print('locpos', self.locPosition['x'],self.locPosition['y'])
@@ -214,7 +214,7 @@ class MyExperiment(ExperimentBase):
                             print('*new post Position*', self.postPosition[0,:])
                             reached=False
 
-                        if dist < (1.1*Radius_post)  and reached == False:
+                        if dist < (0.5*Radius_post)  and reached == False:
                             #1.5 is too far
                             #change to post_radius/2 plus some xtra: otherwise: artifact!!! b4 4.85 change to t_exp +10*60
                             write=True
@@ -256,7 +256,7 @@ class MyExperiment(ExperimentBase):
 
                         
 
-                        if t> t_exp+15*60:
+                        if t> t_exp+20*60:
                             #change to 10*60,  each stimulus should be repeated after reaching for ten min
                             
                             print('Locusts position at reaching t_exp', self.locPosition['x'],self.locPosition['y'])
@@ -289,7 +289,7 @@ class MyExperiment(ExperimentBase):
                                 #print('stim4 starts at t=',t_beginning_of_stim4)    
                             if t > (t_beginning_of_stim4 + 5*60):
                                 #change to 5*60!!!
-                                print('total experiment time',t)
+                                print('total experiment time',t/60)
                                 print('Experiment completed')
                                 #print( 't',t,'stim4 beginning', t_beginning_of_stim4)
                                 sys.exit()

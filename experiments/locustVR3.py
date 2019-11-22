@@ -24,7 +24,6 @@ a = 0
 running = 1
 numberPost = 3 #10
 t0 = time.time()
-
 def pathDefine(path,ids, params=[]):
     path = path + str(ids)
     if not os.path.exists(path):
@@ -107,6 +106,8 @@ class MyExperiment(ExperimentBase):
 
     
     def running_writing_csv(self):
+        bad_locust_counter = 0
+        reach_counter = 0
         t0 = time.time()
         firstinitialized=False
         initialized=False
@@ -123,14 +124,9 @@ class MyExperiment(ExperimentBase):
         #print('saved in csv in:', path)
         #opn the csv file and then 'a' for appending the next line, instead of overwriting ('w')
         with open(path+'/results.csv', 'a') as output:
-            #self.locPosition = {'x':0,'y':0,'z':0}
-            #self.publish_state()
-            #print('self state',self._state())
             #have 5 experiments:
             while nStimuli<=4:
                 self.publish_state()
-                #while 1 vielleicht aendern zu while self.start oder runforever oder variable xy=1, diese  
-                # bei if nStimuli==4 dann auf 0 setzen!!!
                 #time starts at t = t0=0
                 t = time.time() - t0
                 
@@ -144,8 +140,6 @@ class MyExperiment(ExperimentBase):
                     print('nStimuli:', nStimuli)
                     print( ' 1 post condition, control')
                     write=True
-                    #print('LocPosition after reset:',self.locPosition['x'])
-                    #print('1 postPosition', self.postPosition[0,:])
                     print('************************************************************************')
                     print(' ')
                     #unveraenderliche variable t_exp
@@ -162,18 +156,12 @@ class MyExperiment(ExperimentBase):
                             #distanz stimmt nicht. der post ist nicht 5 vom locust entfernt!!!
                         #bis hier alles gut dann self.origin fkt nicht*********************************************  
                         
-                            if self.rand%100000==0:
+                            if self.rand%700000==0:
                                 print('min_absolut:', t/60, 'time spend on stimulus', (t-t_exp)/60)
                                 
-                                if self.rand%500000==0:
+                                if self.rand%1000000==0:
                                     print('locpos', self.locPosition['x'],self.locPosition['y'])
                                 #print('locpos', self.locPosition)
-
-
-
-
-
-
 
 
                         if reached==True:
@@ -188,23 +176,16 @@ class MyExperiment(ExperimentBase):
 
                             
                             #pause 8 sek cylinders at 1000,1000
-                            self.move_node('Cylinder1' , 1000, 1000,  0)
-                            self.move_node('Cylinder0' , 1000, 1000,  0)
+                            self.move_node('Cylinder1' , 1000, 1000,  50)
+                            self.move_node('Cylinder0' , 1000, 1000,  50)
                             time.sleep(8)
-
-
 
                             self.updateStimuli(nStimuli)
                             self.reset_origin()
+                            time.sleep(1)
                             #no of times locust runs through same stimulus
                             wait= True
-                            #here while as sleep time until reset has been successfully done:
-                            while self.locPosition['x'] != 0.0 and self.locPosition['y']!=0:
-                                if wait == True:
-                                    print('wait for reset of position')
-                                    wait = False
-                                pass
-                                #print('wait for reset')
+
                             output.write('%.8f, %.8f, %.8f,  %d, %.8f, %s\n' % (self.locPosition['x'],self.locPosition['y'],self.locPosition['z'], self.counter, t, str(nStimuli)))
                             wait= True
                             #print('+++++++++++start von texp', t_exp, 't=',t)
@@ -214,7 +195,7 @@ class MyExperiment(ExperimentBase):
                             print('*new post Position*', self.postPosition[0,:])
                             reached=False
 
-                        if dist < (0.5*Radius_post)  and reached == False:
+                        if dist < (1.1*Radius_post)  and reached == False:
                             #1.5 is too far
                             #change to post_radius/2 plus some xtra: otherwise: artifact!!! b4 4.85 change to t_exp +10*60
                             write=True
@@ -224,8 +205,13 @@ class MyExperiment(ExperimentBase):
                             print('************************************************************************')
                             print(' ')
                             self.counter += 1
+                            reach_counter += 1
                             reached=True
                             t_exp_trial=t
+                            bad_locust_counter =0
+                            #print in another csv
+                            #with open(path+'/info.csv', 'a') as output:
+                            #output.write('%.8f, %.8f, %.8f,  %d, %.8f, %s\n' % (self.locPosition['x'],self.locPosition['y'],self.locPosition['z'], self.counter, t, str(nStimuli)))
 
 
 
@@ -234,10 +220,11 @@ class MyExperiment(ExperimentBase):
                             #ending at dist/t expiry, locusts that dont do the job very well:
                             #if dist >  2*(self.postDistance)   and dist < 900:   
                             #distance locust can max. reach without reaching post
-                            print('Locust has reached a distance of > ', 0.1+self.postDistance)
+                            print('Locust has reached a distance of > ', 0.2+self.postDistance)
                             print('************************************************************************')
                             print(' ')
                             self.counter += 1
+                            bad_locust_counter +=1 
                             reached=True
                             t_exp_trial=t
 
@@ -251,12 +238,18 @@ class MyExperiment(ExperimentBase):
                             self.counter += 1
                             t_exp_trial=t
                             reached=True
+                            bad_locust_counter +=1
+
+                        if bad_locust_counter>2:
+                            #exchange locust
+                            print('exchange locust, hasnt done experiment for', bad_locust_counter ,'times in a row')
+
 
 
 
                         
 
-                        if t> t_exp+20*60:
+                        if t> t_exp+15*60:
                             #change to 10*60,  each stimulus should be repeated after reaching for ten min
                             
                             print('Locusts position at reaching t_exp', self.locPosition['x'],self.locPosition['y'])
@@ -274,6 +267,7 @@ class MyExperiment(ExperimentBase):
                             t_exp=t
                             t_exp_trial=t
                             print('texp' , t-t_exp)
+                            bad_locust_counter =0
 
                         #remove!!!!!next two lines / (for checking end of experiment, entering stim4 immed)
 
@@ -290,7 +284,8 @@ class MyExperiment(ExperimentBase):
                             if t > (t_beginning_of_stim4 + 5*60):
                                 #change to 5*60!!!
                                 print('total experiment time',t/60)
-                                print('Experiment completed')
+                                print('Experiment completed, times post was reached:', reach_counter)
+
                                 #print( 't',t,'stim4 beginning', t_beginning_of_stim4)
                                 sys.exit()
 

@@ -9,8 +9,8 @@ class MyExperiment(ExperimentBase):
         ExperimentBase.__init__(self, *args, **kwargs)
         self._origin = None
         self._olock = threading.Lock()
-
-        self.load_osg('/home/loopbio/Documents/stimuli/demo_world_v3.osgt')
+        self.load_osg('/home/loopbio/Documents/locustVR/stimulus/3posts_20cm_radius_z_at_50.osgt')
+        #self.load_osg('/home/loopbio/Documents/stimuli/')
         #debug_world.osgt       demo_world_v2.osgt   debug_world_2.osgt         +++++ demo_world_v3.osgt
     # the base class calls this with the current integrated position in the world. the default implementation
     # just calls move_world. However this keeps an origin and can reset it.

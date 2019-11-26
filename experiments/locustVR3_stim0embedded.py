@@ -121,6 +121,7 @@ class MyExperiment(ExperimentBase):
         nStimuli = 0
         n=1
         path = pathDefine(pathData,self.expId)
+        wait= True
         #print('saved in csv in:', path)
         #opn the csv file and then 'a' for appending the next line, instead of overwriting ('w')
         with open(path+'/results.csv', 'a') as output:
@@ -145,7 +146,7 @@ class MyExperiment(ExperimentBase):
                     #unveraenderliche variable t_exp
                      
                         
-                if t>5*60:
+                if t>0.51*60:
                     #change to 8*60!!! first time in the vr they take some time to settle
                     for nPost in range(0,3):
                         #dist is the variable that is the outcome of the function distance
@@ -173,27 +174,36 @@ class MyExperiment(ExperimentBase):
                                 t_exp_trial=t
                                
                             print('nStimuli:', nStimuli, 'trial:', self.counter)
-
+                            t_for_while = time.time()
                             
-                            #pause 8 sek cylinders at 1000,1000
-                            self.move_node('Cylinder1' , 1000, 1000,  50)
-                            self.move_node('Cylinder0' , 1000, 1000,  50)
-                            time.sleep(10)
+                            #self.reset_origin()
+                            #hinter alle reached auch wait = true******************************!!!!!!!!!!!!!!!!!!!!!!
 
-                            self.updateStimuli(nStimuli)
-                            self.reset_origin()
-                            time.sleep(1)
+                            while t_for_while+8 > time.time():
+                                #pause 8 sek cylinders at 1000,1000
+                                #time.sleep(10)
+                                #print('t fro while ',t_for_while, 't', time.time())
+
+                                if wait == True:
+                                    print('wait for 8sec')
+                                    print('t for while nach 0 sec',t_for_while-time.time())
+                                    self.move_node('Cylinder1' , 1000, 1000,  50)
+                                    self.move_node('Cylinder0' , 1000, 1000,  50)
+                                    wait = False
+                                for i in range(0,17):
+                                    if t_for_while+0.5*i == time.time() and reached == True:
+                                        self.reset_origin()
+
+                            print('t for while nach 8 sec',t_for_while-time.time())
                             #no of times locust runs through same stimulus
-                            wait= True
-
+                            reached=False
                             output.write('%.8f, %.8f, %.8f,  %d, %.8f, %s\n' % (self.locPosition['x'],self.locPosition['y'],self.locPosition['z'], self.counter, t, str(nStimuli)))
+                            self.updateStimuli(nStimuli)
                             wait= True
-                            #print('+++++++++++start von texp', t_exp, 't=',t)
                             print('t_exp=', (t_exp-t)/60)
                             print('*Locusts position after reset*', self.locPosition['x'],self.locPosition['y'])
-                            #should be equal to old post pos:
                             print('*new post Position*', self.postPosition[0,:])
-                            reached=False
+                            
 
                         if dist < (1.1*Radius_post)  and reached == False:
                             #1.5 is too far
@@ -216,7 +226,7 @@ class MyExperiment(ExperimentBase):
 
 
                         
-                        if distance(self.locPosition, self.postPosition[0,:] ,  True) > (0.1+self.postDistance) and distance(self.locPosition, self.postPosition[1,:] ,  True)> (0.1+self.postDistance) and dist < 900:
+                        if distance(self.locPosition, self.postPosition[0,:] ,  True) > (0.2+self.postDistance) and distance(self.locPosition, self.postPosition[1,:] ,  True)> (0.1+self.postDistance) and dist < 900:
                             #ending at dist/t expiry, locusts that dont do the job very well:
                             #if dist >  2*(self.postDistance)   and dist < 900:   
                             #distance locust can max. reach without reaching post
@@ -228,7 +238,7 @@ class MyExperiment(ExperimentBase):
                             reached=True
                             t_exp_trial=t
 
-                        if t > t_exp_trial+5*60:  #5m: 8.5 min
+                        if t > t_exp_trial+1*60:  #5m: 8.5 min
                             #7*60: sometimes just before reaching post, time ends, time locust can spend to reach one post
                             print('Locusts position at reaching t_exp', self.locPosition['x'],self.locPosition['y'])
                             print('*******************************stimulus',nStimuli,'trial:',self.counter,': times up***********************')
@@ -240,16 +250,16 @@ class MyExperiment(ExperimentBase):
                             reached=True
                             bad_locust_counter +=1
 
-                        if bad_locust_counter>2:
+                            #if bad_locust_counter>2:
                             #exchange locust
-                            print('exchange locust, hasnt done experiment for', bad_locust_counter ,'times in a row')
+                            #print('exchange locust, hasnt done experiment for', bad_locust_counter ,'times in a row')
 
 
 
 
                         
 
-                        if t> t_exp+15*60:
+                        if t> t_exp+2*60:
                             #change to 10*60,  each stimulus should be repeated after reaching for ten min
                             
                             print('Locusts position at reaching t_exp', self.locPosition['x'],self.locPosition['y'])
@@ -258,12 +268,26 @@ class MyExperiment(ExperimentBase):
                             print('************************************************************************')
                             print(' ')
                             nStimuli = nStimuli+1
+                            while t_for_while+8 > time.time():
+                                #pause 8 sek cylinders at 1000,1000
+                                #time.sleep(10)
+                                #print('t fro while ',t_for_while, 't', time.time())
+
+                                if wait == True:
+                                    print('wait for 8sec')
+                                    print('t for while nach 0 sec',t_for_while-time.time())
+                                    self.move_node('Cylinder1' , 1000, 1000,  50)
+                                    self.move_node('Cylinder0' , 1000, 1000,  50)
+                                    wait = False
+                                for i in range(0,17):
+                                    if t_for_while+0.5*i == time.time() and reached == True:
+                                        self.reset_origin()
+
+                            
                             self.counter = 0
                             print('nStimulus',nStimuli, 'trial:',self.counter )
                             self.updateStimuli(nStimuli)
                             self.reset_origin()
-                            while self.locPosition['x'] != 0.0 and self.locPosition['y']!=0:
-                                pass
                             t_exp=t
                             t_exp_trial=t
                             print('texp' , t-t_exp)

@@ -6,7 +6,7 @@ import threading
 import uuid
 import sqlite3
 import numpy as np
-
+import math
 from locustvr.experiment import ExperimentBase
 
 projectDB = '/home/loopbio/Documents/databases/locustProjects.db'
@@ -31,7 +31,7 @@ class MyExperiment(ExperimentBase):
         # assign experiment a unique id
         self.expId = uuid.uuid4()
         # get experiment conditions from database
-        self.getExperiment()
+        #self.getExperiment()
         # start every experiment with a no post condition
         #self.updateStimuli(0)
         
@@ -52,7 +52,7 @@ class MyExperiment(ExperimentBase):
         with self._olock:
             self._origin = None
     
-    def getExperiment(self):
+    '''def getExperiment(self):
         pass
         
         # establish a connecttion to the project database
@@ -62,10 +62,10 @@ class MyExperiment(ExperimentBase):
         # establish a second connecttion to the experiment database
         conn2 = sqlite3.connect(expDB)
         # connect a cursor that goes through the experiment database
-        cursorExperiment = conn2.cursor()
+        cursorExperiment = conn2.cursor()'''
         
 
-        '''
+    '''
     
     '''
     def run_forever(self):
@@ -78,15 +78,15 @@ class MyExperiment(ExperimentBase):
                 # send state to motif to record
                 self.publish_state()
                 t = time.time()
-                for k in range(0,10):
+                for i in range(0,10):
                     #print('k=', k)
-                    self.move_node('Cylinder' + str(k), 1000, 1000,  0)
+                    self.move_node('Cylinder' + str(i), 1000, 1000,  0)
                     #self.move_node('Cylinder2' , 2, 2,  0)
-                    self.move_node('Cylinder3' , 1.5, 1.5,  0)
+                    #self.move_node('Cylinder3' , 1.5, 1.5,  0)
                     #self.move_node('Cylinder4' , 0, 1,  0)
-                    self.move_node('Cylinder5' , -1.5, -1.5,  0)
-                    self.move_node('Cylinder6' , 1.5,-1.5,  0)
-                    self.move_node('Cylinder0' , -1.5, 1.5,  0)
+                    #self.move_node('Cylinder5' , -1.5, -1.5,  0)
+                    self.move_node('Cylinder6' , 2*math.cos(time.time()), 2*math.sin(time.time()) ,50)
+                    #self.move_node('Cylinder0' ,2+math.cos(time.time()-0.25)+ 2*math.cos(time.time()), math.cos(time.time()+0.25)+math.cos(time.time()),  50)
                     if j==0:
                         self.reset_origin()
 

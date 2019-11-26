@@ -13,8 +13,8 @@ from locustvr.experiment import ExperimentBase
 
 replication = 3
 
-projectDB = '/home/loopbio/Documents/locustVR/databases/locustProjects_dist1.db'
-expDB = '/home/loopbio/Documents/locustVR/databases/locustExperiments_dist1.db'
+projectDB = '/home/loopbio/Documents/locustVR/databases/locustProjects_2post_2m_deg30_45_60.db' #locustProjects_dist1
+expDB = '/home/loopbio/Documents/locustVR/databases/locustExperiments_19-11-26.db'   #locustExperiments_dist1
 pathData = '/home/loopbio/Documents/locustVR/data/'
 
 
@@ -54,7 +54,7 @@ class MyExperiment(ExperimentBase):
         self._origin = None
         self._olock = threading.Lock()
 
-        self.load_osg('/home/loopbio/Documents/locustVR/stimulus/ten_post_stimulus_diffsize5.osgt')
+        self.load_osg('/home/loopbio/Documents/locustVR/stimulus/3posts_20cm_radius_z_at_50.osgt')  #ten_post_stimulus_diffsize5.osgt
         #('/home/loopbio/Documents/stimuli/ten_post_stimulus.osgt')               #('/home/loopbio/Documents/locustVR/stimulus/ten_post_stimulus_diffsize5.osgt')
         self.expTrial = -1
         self.replicate = -1
@@ -213,16 +213,19 @@ class MyExperiment(ExperimentBase):
                             self.counter += 1
                             reached=True
                             t_exp_trial=t
-
-                        #ending at dist/t expiry, locusts that dont do the job very well:
-                        if dist > 2.5 and dist < 900:
+                        if distance(self.locPosition, self.postPosition[0,:] ,  True) > (0.25+self.postDistance) and distance(self.locPosition, self.postPosition[1,:] ,  True)> (0.25+self.postDistance) and dist < 900:
+                            #ending at dist/t expiry, locusts that dont do the job very well:
+                            #if dist > 2.5 and dist < 900:
                             #distance locust can max. reach without reaching post
-                            print('Locust has reached a distance of > 4')
+                            print('Locust has reached a distance of > ' 0.25+self.postDistance)
                             print('************************************************************************')
                             print(' ')
                             self.counter += 1
                             reached=True
                             t_exp_trial=t
+                            bad_locust_counter =0
+
+
 
                         if t > t_exp_trial+5*60:
                             #7*60: sometimes just before reaching post, time ends, time locust can spend to reach one post
@@ -234,6 +237,7 @@ class MyExperiment(ExperimentBase):
                             self.counter += 1
                             t_exp_trial=t
                             reached=True
+                            bad_locust_counter =0
 
 
 
@@ -257,6 +261,21 @@ class MyExperiment(ExperimentBase):
                             t_exp=t
                             t_exp_trial=t
                             print('texp' , t-t_exp)
+
+                         if bad_locust_counter>3:
+                            self.reset_origin()
+                            t_for_while = time.time()
+                            print('exchange locust, hasnt done experiment for', bad_locust_counter ,'times in a row')
+                            bad_locust_counter=0
+                            while t_for_while+12 > time.time():
+
+                                self.move_node('Cylinder2' , 2*math.cos(time.time()/1.5), 2*math.sin(time.time()/1.5) ,50)
+                                #self.move_node('Cylinder1' , 2+math.cos(i), 0+math.cos(i),  50)
+                                #self.move_node('Cylinder0' , 1002, 1000,  50)
+                            self.updateStimuli(nStimuli)
+                            self.reset_origin()
+                            
+                       
 
                         #remove!!!!!next two lines / (for checking end of experiment, entering stim4 immed)
 

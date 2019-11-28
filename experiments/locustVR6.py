@@ -266,7 +266,7 @@ class MyExperiment(ExperimentBase):
                                 self.move_node('Cylinder2' , 2*math.cos(time.time()/1.5), 2*math.sin(time.time()/1.5) ,50)
                                 #self.move_node('Cylinder1' , 2+math.cos(i), 0+math.cos(i),  50)
                                 #self.move_node('Cylinder0' , 1002, 1000,  50)
-                            self.counter +=1
+                            #self.counter +=1
                             self.updateStimuli(nStimuli)
                             self.reset_origin()
                             bad_locust_counter=0
@@ -274,7 +274,7 @@ class MyExperiment(ExperimentBase):
                             
 
 
-                        if t> t_exp+12*60 or t>t_exp+1*60 and nStimuli == 0:
+                        if t> t_exp+12*60 or t>t_exp+3.8*60 and nStimuli == 0:
                             #change to 10*60,  each stimulus should be repeated after reaching for ten min
                             
                             print('Locusts position at reaching t_exp', self.locPosition['x'],self.locPosition['y'])

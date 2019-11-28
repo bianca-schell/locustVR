@@ -107,6 +107,8 @@ class MyExperiment(ExperimentBase):
 
     
     def running_writing_csv(self):
+        bad_locust_counter = 0
+        reach_counter = 0
         t0 = time.time()
         firstinitialized=False
         initialized=False
@@ -129,8 +131,6 @@ class MyExperiment(ExperimentBase):
             #have 5 experiments:
             while nStimuli<=4:
                 self.publish_state()
-                #while 1 vielleicht aendern zu while self.start oder runforever oder variable xy=1, diese  
-                # bei if nStimuli==4 dann auf 0 setzen!!!
                 #time starts at t = t0=0
                 t = time.time() - t0
                 
@@ -144,8 +144,6 @@ class MyExperiment(ExperimentBase):
                     print('nStimuli:', nStimuli)
                     print( ' 1 post condition, control')
                     write=True
-                    #print('LocPosition after reset:',self.locPosition['x'])
-                    #print('1 postPosition', self.postPosition[0,:])
                     print('************************************************************************')
                     print(' ')
                     #unveraenderliche variable t_exp

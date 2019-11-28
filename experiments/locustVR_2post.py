@@ -13,8 +13,8 @@ from locustvr.experiment import ExperimentBase
 
 replication = 3
 
-projectDB = '/home/loopbio/Documents/locustVR/databases/Projects_2post.db'
-expDB = '/home/loopbio/Documents/locustVR/databases/Experiments_2post.db'
+projectDB = '/home/loopbio/Documents/locustVR/databases/locustProjects_19_11_28.db'  #Projects_2post.db
+expDB = '/home/loopbio/Documents/locustVR/databases/locustExperiments_19_11_28.db'  #Experiments_2post.db
 pathData = '/home/loopbio/Documents/locustVR/data/'
 
 
@@ -22,7 +22,7 @@ project = 'DecisionGeometry'
 experimenter = 'BS'
 a = 0
 running = 1
-numberPost = 10
+numberPost = 3
 t0 = time.time()
 
 def pathDefine(path,ids, params=[]):
@@ -54,7 +54,7 @@ class MyExperiment(ExperimentBase):
         self._origin = None
         self._olock = threading.Lock()
 
-        self.load_osg('/home/loopbio/Documents/stimuli/ten_post_stimulus.osgt')
+        self.load_osg('/home/loopbio/Documents/locustVR/stimulus/3posts_20cm_radius_z_at_50.osgt')     #('/home/loopbio/Documents/stimuli/ten_post_stimulus.osgt')
         self.expTrial = -1
         self.replicate = -1
         self.tSwitch = 0
@@ -149,11 +149,12 @@ class MyExperiment(ExperimentBase):
                     print('************************************************************************')
                     print(' ')
                     #unveraenderliche variable t_exp
-                     
+
+                    
                         
-                if t>1*60:
+                if t>2*60:
                     #change to 1*60!!!
-                    for nPost in range(0,10):
+                    for nPost in range(0,3):
                         #dist is the variable that is the outcome of the function distance
                         # ':'means take all the values in that dimension which are x and y
                         dist = distance(self.locPosition, self.postPosition[nPost,:] ,  True)
@@ -162,10 +163,10 @@ class MyExperiment(ExperimentBase):
                             #distanz stimmt nicht. der post ist nicht 5 vom locust entfernt!!!
                         #bis hier alles gut dann self.origin fkt nicht*********************************************  
                         
-                            if self.rand%100000==0:
+                            if self.rand%1000000==0:
                                 print('min_absolut:', t/60, 'time spend on stimulus', (t-t_exp))
-                                if self.rand%500000==0:
-                                    print('locpos', self.locPosition['x'],self.locPosition['y'])
+                            if self.rand%500000==0:
+                                print('***locpos', self.locPosition['x'],self.locPosition['y'])
                                 #print('locpos', self.locPosition)
 
 
@@ -201,7 +202,7 @@ class MyExperiment(ExperimentBase):
                             print('*new post Position*', self.postPosition[0,:])
                             reached=False
 
-                        if dist < 0.58 and reached == False:
+                        if dist < 0.25 and reached == False:
                             #change to post_radius/2!!! b4 4.85 change to t_exp +10*60
                             write=True
                             print('Locusts position at reaching', self.locPosition['x'],self.locPosition['y'])
@@ -212,18 +213,20 @@ class MyExperiment(ExperimentBase):
                             self.counter += 1
                             reached=True
                             t_exp_trial=t
+                        
+                        if distance(self.locPosition, self.postPosition[0,:] ,  True) > (0.25+self.postDistance) and distance(self.locPosition, self.postPosition[1,:] ,  True)> (0.25+self.postDistance) and dist < 900:
 
                         #ending at dist/t expiry, locusts that dont do the job very well:
-                        if dist > 5.8 and dist < 900:
+                        #if dist > 2.3 and dist < 900:
                             #distance locust can max. reach without reaching post
-                            print('Locust has reached a distance of > 4')
+                            print('Locust has reached a distance of > 2.3')
                             print('************************************************************************')
                             print(' ')
                             self.counter += 1
                             reached=True
                             t_exp_trial=t
 
-                        if t > t_exp_trial+8.5*60:
+                        if t > t_exp_trial+5*60:
                             #7*60: sometimes just before reaching post, time ends, time locust can spend to reach one post
                             print('Locusts position at reaching t_exp', self.locPosition['x'],self.locPosition['y'])
                             print('*******************************stimulus',nStimuli,'trial:',self.counter,': times up***********************')
@@ -238,7 +241,7 @@ class MyExperiment(ExperimentBase):
 
                         
 
-                        if t> t_exp+34*60:
+                        if t> t_exp+15*60:
                             #change to 10*60,  each stimulus should be repeated after reaching for ten min
                             
                             print('Locusts position at reaching t_exp', self.locPosition['x'],self.locPosition['y'])
@@ -281,14 +284,6 @@ class MyExperiment(ExperimentBase):
 
 
                 self.rand+=1
-                #print pos in csv :
-                #better would be: 1/200 sec
-                #if b%0.2000==0:
-                #funktioniert nicht. dann gibt er an bspw 0.2 s 10 werte aus, bei 0,4 s ebenfalls usw
-
-                #ODER INCREMENT mit +1/200 und dann werte kleiner /groesser als
-                #jeder 1000. macht etwa 100 werte pro sekunde
-
                 if self.rand%1000==0:
                     output.write('%.8f, %.8f, %.8f,  %d, %.8f, %s\n' % (self.locPosition['x'],self.locPosition['y'],self.locPosition['z'], self.counter, t, str(nStimuli)))
             
@@ -364,7 +359,7 @@ class MyExperiment(ExperimentBase):
         # connect a cursor that goes through the project database
         cursorProject = conn.cursor()
         # pick a new stimulus from available permutations
-        for nPost in range(0,10):
+        for nPost in range(0,3):
             #print((project,self.expTrial,self.replicate,nStimuli))
             cursorProject.execute("Select post"+str(nPost)+" from projects where project = ? and exp = ? and replicate = ? and nStimuli =?",(project,self.expTrial,self.replicate,nStimuli))
             fetched = cursorProject.fetchall()
@@ -380,7 +375,7 @@ class MyExperiment(ExperimentBase):
                 self.postPosition[nPost,:] = dictData['position']
                 self.postDistance = dictData['distance']
            
-            self.move_node('Cylinder' + str(nPost), self.postPosition[nPost,0],  self.postPosition[nPost,1], 0)
+            self.move_node('Cylinder' + str(nPost), self.postPosition[nPost,0],  self.postPosition[nPost,1], 50)
 
             #self.move_node('Cylinder' + str(nPost), -2,  -2, 0)
         # close connection

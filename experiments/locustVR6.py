@@ -13,8 +13,8 @@ from locustvr.experiment import ExperimentBase
 
 replication = 3
 
-projectDB = '/home/loopbio/Documents/locustVR/databases/locustProjects_2post_2m_deg30_45_60.db'
-expDB = '/home/loopbio/Documents/locustVR/databases/locustExperiments_19-11-26.db'     #locustExperiments_2post_2m_deg30_45_60
+projectDB = '/home/loopbio/Documents/locustVR/databases/locustProjects_19_11_28.db'
+expDB = '/home/loopbio/Documents/locustVR/databases/locustExperiments_19_11_28.db'     #locustExperiments_2post_2m_deg30_45_60 locustExperiments_19-11-26.db
 pathData = '/home/loopbio/Documents/locustVR/data/'
 
 Radius_post = 0.2 # change here the radius that is given in the db
@@ -111,7 +111,7 @@ class MyExperiment(ExperimentBase):
         t0 = time.time()
         firstinitialized=False
         initialized=False
-        reached=True
+        reached=False
         #write=True
         reset= False
         go=False
@@ -122,12 +122,18 @@ class MyExperiment(ExperimentBase):
         n=1
         path = pathDefine(pathData,self.expId)
         wait= True
+        self.updateStimuli(nStimuli)
+
+
+
+
         #print('saved in csv in:', path)
         #opn the csv file and then 'a' for appending the next line, instead of overwriting ('w')
         with open(path+'/results.csv', 'a') as output:
             #have 5 experiments:
             while nStimuli<=4:
                 self.publish_state()
+
                 #time starts at t = t0=0
                 t = time.time() - t0
                 
@@ -159,6 +165,18 @@ class MyExperiment(ExperimentBase):
                         #dist is the variable that is the outcome of the function distance
                         # ':'means take all the values in that dimension which are x and y
                         dist = distance(self.locPosition, self.postPosition[nPost,:] ,  True)
+                        if nStimuli==0 and firstinitialized==False:
+                            self.reset_origin()
+                            self.updateStimuli(nStimuli)
+                            #nStimuli +=1
+                            t_exp=t
+                            t_exp_trial=t
+                            firstinitialized = True
+                            self.counter =0
+                       
+
+
+
                         if self.rand%100000==0 and reached == False and dist<800:
                             print('the distance to post %d is:' %(nPost),dist)
                             if self.rand%700000==0:
@@ -166,24 +184,13 @@ class MyExperiment(ExperimentBase):
                                 if self.rand%1000000==0:
                                     print('locpos', self.locPosition['x'],self.locPosition['y'])
 
-
                         if reached==True:
-                            if nStimuli==0 and firstinitialized==False:
-                                self.reset_origin()
-                                self.updateStimuli(nStimuli)
-                                #nStimuli +=1
-                                t_exp=t
-                                t_exp_trial=t
-                                firstinitialized = True
-                                self.counter =0
+                            
                             if nStimuli == 0 and t> t_exp+5*60:
                                 nStimuli +=1
                                 self.counter =0
                                 t_exp=t
                                 t_exp_trial=t
-
-
-
 
                             print('nStimuli:', nStimuli, 'trial:', self.counter)
                             t_for_while = time.time()
@@ -247,24 +254,27 @@ class MyExperiment(ExperimentBase):
                             t_exp_trial=t
                             reached=True
                             bad_locust_counter +=1
-                            
-                        if bad_locust_counter>3:
-                            self.reset_origin()
-                            bad_locust_counter=0
-                            t_for_while = time.time()
-                            print('exchange locust, hasnt done experiment for', bad_locust_counter ,'times in a row')
 
+                        if bad_locust_counter > 3:
+                            self.reset_origin()
+                            
+                            t_for_while = time.time()
+                            print('**********bad locust, hasnt done exp for', bad_locust_counter ,'times in a row*******')
+                            bad_locust_counter=0
                             while t_for_while+12 > time.time():
 
                                 self.move_node('Cylinder2' , 2*math.cos(time.time()/1.5), 2*math.sin(time.time()/1.5) ,50)
                                 #self.move_node('Cylinder1' , 2+math.cos(i), 0+math.cos(i),  50)
                                 #self.move_node('Cylinder0' , 1002, 1000,  50)
+                            self.counter +=1
                             self.updateStimuli(nStimuli)
                             self.reset_origin()
+                            bad_locust_counter=0
+                            print('*******************************stimulus',nStimuli,'trial:',self.counter,':  ***********************')
                             
 
 
-                        if t> t_exp+12*60:
+                        if t> t_exp+12*60 or t>t_exp+1*60 and nStimuli == 0:
                             #change to 10*60,  each stimulus should be repeated after reaching for ten min
                             
                             print('Locusts position at reaching t_exp', self.locPosition['x'],self.locPosition['y'])

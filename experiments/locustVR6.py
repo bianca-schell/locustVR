@@ -107,7 +107,7 @@ class MyExperiment(ExperimentBase):
     
     def running_writing_csv(self):
         bad_locust_counter = 0
-        reach_counter = 0
+        self.reach_counter = 0
         t0 = time.time()
         firstinitialized=False
         initialized=False
@@ -124,6 +124,7 @@ class MyExperiment(ExperimentBase):
         wait= True
         self.updateStimuli(nStimuli)
 
+        times_bad_loc_active =0
 
 
 
@@ -194,6 +195,7 @@ class MyExperiment(ExperimentBase):
 
                             print('nStimuli:', nStimuli, 'trial:', self.counter)
                             t_for_while = time.time()
+                            self.reset_origin()
                             while t_for_while+8 > time.time():
                                 #pause 8 sek cylinders at 1000,1000
                                 if wait == True:
@@ -202,9 +204,18 @@ class MyExperiment(ExperimentBase):
                                     self.move_node('Cylinder1' , 1000, 1000,  50)
                                     self.move_node('Cylinder0' , 1000, 1000,  50)
                                     wait = False
-                                for i in range(0,30):
-                                    if t_for_while+0.5*i == time.time() and reached == True:
-                                        self.reset_origin()
+                                    #newly added 28-11-19
+                                    #self.reset_origin()
+                                
+                                if t_for_while +6 > time.time() and reached == True:
+                                    for i in range(0,5):    
+                                        #self.reset_origin()
+                                        print('*Locusts position after reset*', self.locPosition['x'],self.locPosition['y'])
+                                        reached=False
+                            self.reset_origin()
+
+
+ 
 
                             print('t for while nach 8 sec',t_for_while-time.time())
                             #no of times locust runs through same stimulus
@@ -227,7 +238,7 @@ class MyExperiment(ExperimentBase):
                             print('************************************************************************')
                             print(' ')
                             self.counter += 1
-                            reach_counter += 1
+                            self.reach_counter += 1
                             reached=True
                             t_exp_trial=t
                             bad_locust_counter =0
@@ -255,6 +266,7 @@ class MyExperiment(ExperimentBase):
                             reached=True
                             bad_locust_counter +=1
 
+
                         if bad_locust_counter > 3:
                             self.reset_origin()
                             
@@ -268,17 +280,27 @@ class MyExperiment(ExperimentBase):
                                 #self.move_node('Cylinder0' , 1002, 1000,  50)
                             #self.counter +=1
                             self.updateStimuli(nStimuli)
-                            self.reset_origin()
+                            self.reset_origin()                            
+                            print('*Locusts position after reset*', self.locPosition['x'],self.locPosition['y'])
+
                             bad_locust_counter=0
+                            times_bad_loc_active += 1
                             print('*******************************stimulus',nStimuli,'trial:',self.counter,':  ***********************')
-                            
+                            print('*Locusts position after reset*', self.locPosition['x'],self.locPosition['y'])
+                        if times_bad_loc_active >= 3:
+                            print('replace loc now')
+
 
 
                         if t> t_exp+12*60 or t>t_exp+3.8*60 and nStimuli == 0:
                             #change to 10*60,  each stimulus should be repeated after reaching for ten min
-                            
+                            if nStimuli == 0 and self.reach_counter == 0:
+                                print('!!!!!!!!!!!!!!!!exchange doesnt respond to control!!!!')
                             print('Locusts position at reaching t_exp', self.locPosition['x'],self.locPosition['y'])
+
                             print('*******************************stimulus',nStimuli,'trial:',self.counter,': times up***********************')
+                            print('***************times l has reached (control) stim :', self.reach_counter)
+
                             print('time has reached t_exp of:',((t-t_exp)), 'min',  't=',t)
                             print('************************************************************************')
                             print(' ')
@@ -293,6 +315,7 @@ class MyExperiment(ExperimentBase):
                             print('texp' , t-t_exp)
                             bad_locust_counter =0
 
+
                         if nStimuli == 4:
                             #5 min of control at the end
                             if stimfourisreached == True:
@@ -303,7 +326,7 @@ class MyExperiment(ExperimentBase):
                             if t > (t_beginning_of_stim4 + 4*60):
                                 #change to 5*60!!!
                                 print('total experiment time',t/60)
-                                print('Experiment completed, times post was reached:', reach_counter)
+                                print('Experiment completed, times post was reached:', self.reach_counter)
 
                                 sys.exit()
 
@@ -441,7 +464,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     e = MyExperiment.new_osg(debug=args.debug_display)
-    e.start(record=False)
+    e.start(record=True)
     e.writeInDb()
     #uncomment write in Db so it writes!!! record=True so it records!!!
     

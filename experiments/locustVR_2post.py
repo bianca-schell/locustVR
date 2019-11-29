@@ -79,6 +79,7 @@ class MyExperiment(ExperimentBase):
         # event counter (number of times locust position is reset)
         self.rand = 0
         self.counter=0
+        self.reacher =0
         self.running = True
         self.locPosition = {'x':0,'y':0,'z':0}
         #self.resetting= False
@@ -152,7 +153,7 @@ class MyExperiment(ExperimentBase):
 
                     
                         
-                if t>2*60:
+                if t>0*60:
                     #change to 1*60!!!
                     for nPost in range(0,3):
                         #dist is the variable that is the outcome of the function distance
@@ -213,6 +214,8 @@ class MyExperiment(ExperimentBase):
                             self.counter += 1
                             reached=True
                             t_exp_trial=t
+                            self.reacher +=1
+
                         
                         if distance(self.locPosition, self.postPosition[0,:] ,  True) > (0.25+self.postDistance) and distance(self.locPosition, self.postPosition[1,:] ,  True)> (0.25+self.postDistance) and dist < 900:
 
@@ -239,9 +242,10 @@ class MyExperiment(ExperimentBase):
 
 
 
+                        if t> t_exp+12*60 or t>t_exp+3.8*60 and nStimuli == 0:  #3.8
                         
 
-                        if t> t_exp+15*60:
+                        #if t> t_exp+15*60:
                             #change to 10*60,  each stimulus should be repeated after reaching for ten min
                             
                             print('Locusts position at reaching t_exp', self.locPosition['x'],self.locPosition['y'])
@@ -277,6 +281,7 @@ class MyExperiment(ExperimentBase):
                                 print('total experiment time',t)
                                 print('Experiment completed')
                                 #print( 't',t,'stim4 beginning', t_beginning_of_stim4)
+                                print('has reached the post:',self.reacher)
                                 sys.exit()
 
 

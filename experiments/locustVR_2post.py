@@ -89,10 +89,19 @@ class MyExperiment(ExperimentBase):
     # just calls move_world. However this keeps an origin and can reset it.
     def do_move_world(self, x, y, z):
         #resetting to 0,0: 
+
+        #with self._olock:
+        '''if self._origin is None:
+            self._origin = x, y, z
+        ox, oy, oz = self._origin'''
+
         with self._olock:
             if self._origin is None:
                 self._origin = x, y, z
             ox, oy, oz = self._origin
+
+
+
 
         # relative position
         self.move_world(x - ox, y - oy, z - oz)
@@ -153,7 +162,7 @@ class MyExperiment(ExperimentBase):
 
                     
                         
-                if t>0*60:
+                if t>3*60:
                     #change to 1*60!!!
                     for nPost in range(0,3):
                         #dist is the variable that is the outcome of the function distance
@@ -188,12 +197,30 @@ class MyExperiment(ExperimentBase):
                             print('nStimuli:', nStimuli, 'trial:', self.counter)
                             self.updateStimuli(nStimuli)
                             self.reset_origin()
+
+                            #wenn reset nicht mehr sofort: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                            #exactly 1 sec sleep: 0,100
+
+                            self.move_node('Cylinder1' , 1000, 1000,  50)
+                            self.move_node('Cylinder0' , 1000, 1000,  50)
+
+                            for i in range(0,300):
+                                time.sleep(0.01)
+                                if i == 100 or i == 150 or i == 200:
+                                    self.reset_origin()
+                                    print(self.locPosition['x'],self.locPosition['y'])
+
+
+                                #print(time.time(), 'time')
+                            print(self.locPosition['x'],self.locPosition['y'])
+                            self.updateStimuli(nStimuli)
+
                             #no of times locust runs through same stimulus
                             
                             #here while as sleep time until reset has been successfully done:
-                            while self.locPosition['x'] != 0.0 and self.locPosition['y']!=0:
-                                pass
-                                #print('wait for reset')
+                            #while self.locPosition['x'] != 0.0 and self.locPosition['y']!=0:
+                            #    pass
+                            #    #print('wait for reset')
                             output.write('%.8f, %.8f, %.8f,  %d, %.8f, %s\n' % (self.locPosition['x'],self.locPosition['y'],self.locPosition['z'], self.counter, t, str(nStimuli)))
                             
                             #print('+++++++++++start von texp', t_exp, 't=',t)
@@ -258,8 +285,8 @@ class MyExperiment(ExperimentBase):
                             print('nStimulus',nStimuli, 'trial:',self.counter )
                             self.updateStimuli(nStimuli)
                             self.reset_origin()
-                            while self.locPosition['x'] != 0.0 and self.locPosition['y']!=0:
-                                pass
+                            #while self.locPosition['x'] != 0.0 and self.locPosition['y']!=0:
+                            #    pass
                             t_exp=t
                             t_exp_trial=t
                             print('texp' , t-t_exp)

@@ -464,8 +464,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     e = MyExperiment.new_osg(debug=args.debug_display)
-    e.start(record=True)
-    e.writeInDb()
+    e.start(record=False)
+    #e.writeInDb()
     #uncomment write in Db so it writes!!! record=True so it records!!!
     
 

@@ -3,8 +3,8 @@ import itertools
 import numpy as np
 from random import shuffle
 
-projectDB = 'locustProjects_19_11_28.db'   #'locustProjects_2post_2m_deg30_45_60.db'
-expDB = 'locustExperiments_19_11_28.db' 	#'locustExperiments_2post_2m_deg30_45_60.db'
+projectDB = 'locustProjects_19_12_09.db'   #'locustProjects_2post_2m_deg30_45_60.db'
+expDB = 'locustExperiments_19_12_09.db' 	#'locustExperiments_2post_2m_deg30_45_60.db'
 
 project = 'DecisionGeometry'
 
@@ -14,7 +14,7 @@ posts = range(2,3)  #1,2 : 1 post, 2,3 two post
 posts = list(itertools.chain.from_iterable(itertools.repeat(x, 10) for x in posts))
 distances = [2.0]	#in meter
 start_ang_split = 8
-angles2 = [np.pi/6, np.pi/4, np.pi/3]			#degree: 60, 70, 180:  [np.pi/3, 7*np.pi/18, np.pi]
+angles2 = [np.pi/6, np.pi/4, np.pi]			#degree: 60, 70, 180:  [np.pi/3, 7*np.pi/18, np.pi]
 angles3 = [5*np.pi/18, 5*np.pi/18, 2*np.pi/3]
 
 # creates empty database

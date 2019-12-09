@@ -13,8 +13,8 @@ from locustvr.experiment import ExperimentBase
 
 replication = 3
 
-projectDB = '/home/loopbio/Documents/locustVR/databases/locustProjects_19_11_28.db'  #Projects_2post.db
-expDB = '/home/loopbio/Documents/locustVR/databases/locustExperiments_19_11_28.db'  #Experiments_2post.db
+projectDB = '/home/loopbio/Documents/locustVR/databases/locustProjects_19_12_09.db'      #locustProjects_19_11_28.db'  #Projects_2post.db
+expDB = '/home/loopbio/Documents/locustVR/databases/locustExperiments_19_12_09.db'            #locustExperiments_19_11_28.db'  #Experiments_2post.db
 pathData = '/home/loopbio/Documents/locustVR/data/'
 
 
@@ -91,14 +91,14 @@ class MyExperiment(ExperimentBase):
         #resetting to 0,0: 
 
         #with self._olock:
-        '''if self._origin is None:
+        if self._origin is None:
             self._origin = x, y, z
-        ox, oy, oz = self._origin'''
+        ox, oy, oz = self._origin
 
-        with self._olock:
+        '''with self._olock:
             if self._origin is None:
                 self._origin = x, y, z
-            ox, oy, oz = self._origin
+            ox, oy, oz = self._origin'''
 
 
 
@@ -137,13 +137,18 @@ class MyExperiment(ExperimentBase):
             #self.publish_state()
             #print('self state',self._state())
             #have 5 experiments:
+            #self.publish_state()
+            #self.publish_state(stimuli_n=nStimuli, msg='running_writing_csv')
+            print('sync: time.time',time.time())
+
             while nStimuli<=4:
                 self.publish_state()
+
                 #while 1 vielleicht aendern zu while self.start oder runforever oder variable xy=1, diese  
                 # bei if nStimuli==4 dann auf 0 setzen!!!
                 #time starts at t = t0=0
                 t = time.time() - t0
-                
+                #self.publish_state(stimuli_n=nStimuli, msg='running_writing_csv')
 
                 #first stimulus is no post condition from database as control. should last for 3 / 5 min.
                 #once resetting bf stimulus
@@ -162,7 +167,7 @@ class MyExperiment(ExperimentBase):
 
                     
                         
-                if t>3*60:
+                if t>1.5*60:
                     #change to 1*60!!!
                     for nPost in range(0,3):
                         #dist is the variable that is the outcome of the function distance
@@ -189,7 +194,7 @@ class MyExperiment(ExperimentBase):
                         if reached==True:
 
                             #nStimuli = nStimuli+1
-                            if nStimuli==0:
+                            if nStimuli==0:                                     
                                 nStimuli +=1
                                 t_exp=t
                                 t_exp_trial=t
@@ -199,7 +204,7 @@ class MyExperiment(ExperimentBase):
                             self.reset_origin()
 
                             #wenn reset nicht mehr sofort: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                            #exactly 1 sec sleep: 0,100
+                            #exactly 1 sec sleep: 0,100 with time.sleep(0.01)
 
                             self.move_node('Cylinder1' , 1000, 1000,  50)
                             self.move_node('Cylinder0' , 1000, 1000,  50)
@@ -230,7 +235,7 @@ class MyExperiment(ExperimentBase):
                             print('*new post Position*', self.postPosition[0,:])
                             reached=False
 
-                        if dist < 0.25 and reached == False:
+                        if dist < 0.25 and reached == False: #0.25
                             #change to post_radius/2!!! b4 4.85 change to t_exp +10*60
                             write=True
                             print('Locusts position at reaching', self.locPosition['x'],self.locPosition['y'])
@@ -261,6 +266,8 @@ class MyExperiment(ExperimentBase):
                             print('Locusts position at reaching t_exp', self.locPosition['x'],self.locPosition['y'])
                             print('*******************************stimulus',nStimuli,'trial:',self.counter,': times up***********************')
                             print('time for trial has expired:',((t-t_exp_trial)/60), 'min',  't=',t)
+                            print('sync: time.time',time.time())
+
                             print('************************************************************************')
                             print(' ')
                             self.counter += 1
@@ -278,6 +285,10 @@ class MyExperiment(ExperimentBase):
                             print('Locusts position at reaching t_exp', self.locPosition['x'],self.locPosition['y'])
                             print('*******************************stimulus',nStimuli,'trial:',self.counter,': times up***********************')
                             print('time has reached t_exp of:',((t-t_exp)), 'min',  't=',t)
+                            print('sync: time.time',time.time())
+
+                            print('has reached post so far:', self.reacher)
+
                             print('************************************************************************')
                             print(' ')
                             nStimuli = nStimuli+1
@@ -308,7 +319,9 @@ class MyExperiment(ExperimentBase):
                                 print('total experiment time',t)
                                 print('Experiment completed')
                                 #print( 't',t,'stim4 beginning', t_beginning_of_stim4)
-                                print('has reached the post:',self.reacher)
+                                print('has reached the post:',self.reacher,'unique ID:',self.expId)
+                                print('sync: time.time',time.time())
+
                                 sys.exit()
 
 
@@ -449,6 +462,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     e = MyExperiment.new_osg(debug=args.debug_display)
+    e.publish_state(msg='starting')
     e.start(record=False)
     e.writeInDb()
     #uncomment write in Db so it writes!!! record=True so it records!!!

@@ -9,7 +9,7 @@ class MyExperiment(ExperimentBase):
         ExperimentBase.__init__(self, *args, **kwargs)
         self._origin = None
         self._olock = threading.Lock()
-        self.load_osg('/home/loopbio/Documents/locustVR/stimulus/VR_Arena_Locusts.osgt')
+        self.load_osg('/home/loopbio/Documents/stimuli/demo_world_v3.osgt') #VR_Arena_Locusts.osgt
         self.move_node('Cylinder' , 0, 0,  5)
 
         #self.load_osg('/home/loopbio/Documents/stimuli/')

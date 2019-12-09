@@ -196,7 +196,16 @@ class MyExperiment(ExperimentBase):
                             print('nStimuli:', nStimuli, 'trial:', self.counter)
                             t_for_while = time.time()
                             self.reset_origin()
-                            while t_for_while+8 > time.time():
+                            self.move_node('Cylinder1' , 1000, 1000,  50)
+                            self.move_node('Cylinder0' , 1000, 1000,  50)
+
+                            for i in range(0,500):
+                                time.sleep(0.01)
+                                if i == 100 or i == 150 or i == 200:
+                                    self.reset_origin()
+                                    print(self.locPosition['x'],self.locPosition['y'])
+                            print('*Locusts position after reset*', self.locPosition['x'],self.locPosition['y'])
+                            '''while t_for_while+8 > time.time():
                                 #pause 8 sek cylinders at 1000,1000
                                 if wait == True:
                                     print('wait for 8sec')
@@ -210,8 +219,8 @@ class MyExperiment(ExperimentBase):
                                 if t_for_while +6 > time.time() and reached == True:
                                     for i in range(0,5):    
                                         #self.reset_origin()
-                                        print('*Locusts position after reset*', self.locPosition['x'],self.locPosition['y'])
-                                        reached=False
+                                        print('*Locusts position after reset*', self.locPosition['x'],self.locPosition['y'])'''
+                            #reached=False
                             self.reset_origin()
 
 
@@ -273,12 +282,14 @@ class MyExperiment(ExperimentBase):
                             t_for_while = time.time()
                             print('**********bad locust, hasnt done exp for', bad_locust_counter ,'times in a row*******')
                             bad_locust_counter=0
-                            while t_for_while+12 > time.time():
+                            #while t_for_while+12 > time.time():
+                            for i in range(0,1200) :  
 
                                 self.move_node('Cylinder2' , 2*math.cos(time.time()/1.5), 2*math.sin(time.time()/1.5) ,50)
                                 #self.move_node('Cylinder1' , 2+math.cos(i), 0+math.cos(i),  50)
                                 #self.move_node('Cylinder0' , 1002, 1000,  50)
                             #self.counter +=1
+                            print('t for while after ???? waiting sec',t_for_while = time.time()-time.time())
                             self.updateStimuli(nStimuli)
                             self.reset_origin()                            
                             print('*Locusts position after reset*', self.locPosition['x'],self.locPosition['y'])
@@ -302,6 +313,8 @@ class MyExperiment(ExperimentBase):
                             print('***************times l has reached (control) stim :', self.reach_counter)
 
                             print('time has reached t_exp of:',((t-t_exp)), 'min',  't=',t)
+                            print('sync: time.time',time.time())
+
                             print('************************************************************************')
                             print(' ')
                             nStimuli = nStimuli+1
@@ -326,7 +339,8 @@ class MyExperiment(ExperimentBase):
                             if t > (t_beginning_of_stim4 + 4*60):
                                 #change to 5*60!!!
                                 print('total experiment time',t/60)
-                                print('Experiment completed, times post was reached:', self.reach_counter)
+                                print('Experiment completed, times post was reached:', self.reach_counter,'unique ID:',self.expId)
+                                print('sync: time.time',time.time())
 
                                 sys.exit()
 

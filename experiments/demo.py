@@ -1,5 +1,6 @@
 import time
 import threading
+import uuid
 
 from locustvr.experiment import ExperimentBase
 
@@ -10,7 +11,18 @@ class MyExperiment(ExperimentBase):
         self._origin = None
         self._olock = threading.Lock()
         self.load_osg('/home/loopbio/Documents/stimuli/demo_world_v3.osgt') #VR_Arena_Locusts.osgt
-        self.move_node('Cylinder' , 0, 0,  5)
+        self.move_node('Cylinder' , 0, 0,  0)#5
+
+        self.expId = uuid.uuid4()
+        uID =str(self.expId)
+        print('here UID!!!!!',self.expId, uID)
+
+
+        now = time.ctime(int(time.time()))
+        self._motif.call('recording/start', filename= uID , metadata={}) #uID_Name+
+
+
+
 
         #self.load_osg('/home/loopbio/Documents/stimuli/')
         #debug_world.osgt       demo_world_v2.osgt   debug_world_2.osgt         +++++ demo_world_v3.osgt   3posts_20cm_radius_z_at_50.osgt
@@ -49,7 +61,7 @@ class MyExperiment(ExperimentBase):
 if __name__ == '__main__':
     import logging
     import argparse
-
+    #self._motif.call()
     logging.basicConfig(level=logging.INFO)
 
     parser = argparse.ArgumentParser()
@@ -60,4 +72,5 @@ if __name__ == '__main__':
     e = MyExperiment.new_osg(debug=args.debug_display)
     e.start(record=False)
     e.run_forever()
+
 

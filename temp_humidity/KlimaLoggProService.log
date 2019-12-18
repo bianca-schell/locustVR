@@ -1,0 +1,14 @@
+11:07:46:483 [4528]  === START LOGGING ===
+11:07:46:484 [4528] DEBUG starting _tamin
+11:07:46:484 [4528] DEBUG arguments:
+11:07:46:484 [4528] DEBUG 	C:\Program Files (x86)\KlimaLoggPro\KlimaLoggProService.exe
+11:07:46:484 [4528] DEBUG 	install
+11:07:46:484 [4528] DEBUG prepare service install: stop service
+11:07:46:484 [4528] INFO Service stopped successfully!
+11:07:46:484 [4528] DEBUG prepare service install: uninstall service
+11:07:46:484 [4528] ERROR "OpenService" in "int __cdecl SvcUninstall(void)" falied with LastError: 0x00000424
+11:07:46:484 [4528] DEBUG prepare service install: create new datastore file
+11:07:47:129 [4528] DEBUG Datastore created successfully!
+11:07:47:130 [4528] DEBUG installing service
+11:07:47:140 [4528] DEBUG Service installed successfully.
+11:07:47:141 [4528]  === END LOGGING ===

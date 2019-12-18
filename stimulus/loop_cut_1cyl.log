@@ -1,0 +1,27 @@
+obj Cube
+
+Type of Cube is MESH
+exporting object Cube
+mesh_object is Cube.001
+mesh Cube with material Material.002
+vertexes 24
+faces 6
+WARNING update material animation not yet supported
+------------------------------------
+vertex groups False False 
+obj Cylinder
+
+Type of Cylinder is MESH
+exporting object Cylinder
+mesh_object is Cylinder
+mesh Cylinder with material Material.001
+vertexes reduced from 25908 to 13000
+faces 6492
+WARNING update material animation not yet supported
+----------------------------------------
+vertex groups False False 
+geode GeodeCube.001
+geode GeodeCylinder
+write file to /home/bianca/Documents/github/locustVR/stimulus/loop_cut_1cyl.osgt
+copy file /home/bianca/Documents/github/zebraVR/stimulus/textures/black.png to /home/bianca/Documents/github/locustVR/stimulus/textures/black.png
+Check log file /home/bianca/Documents/github/locustVR/stimulus/loop_cut_1cyl.log

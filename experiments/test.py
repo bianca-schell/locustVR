@@ -10,7 +10,8 @@ class MyExperiment(ExperimentBase):
         self._origin = None
         self._olock = threading.Lock()
 
-        self.load_osg('/home/loopbio/Documents/stimuli/ten_post_stimulus.osgt')
+        #self.load_osg('/home/loopbio/Documents/stimuli/ten_post_stimulus.osgt')
+        self.load_osg('/home/loopbio/Documents/locustVR/stimulus/loop_cut_1cyl.osgt')
 
     # the base class calls this with the current integrated position in the world. the default implementation
     # just calls move_world. However this keeps an origin and can reset it.
@@ -37,10 +38,10 @@ class MyExperiment(ExperimentBase):
         self.move_node(name, x - ox, y - oy, z - oz)
 
     def run_forever(self):
-        self.origin_relative_move_node('Cylinder0' , 1,1,50)
+        self.origin_relative_move_node('Cylinder' , 0,0,50)
         #self.reset_origin()
-        for i in range(1,10):
-            self.origin_relative_move_node('Cylinder'+str(i) , 0,0,1000)
+        #for i in range(1,10):
+        #    self.origin_relative_move_node('Cylinder'+str(i) , 0,0,1000)
         t0 = time.time()
         try:
             while 1:

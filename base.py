@@ -4,6 +4,7 @@ import threading
 import logging
 
 import zmq
+import faulthandler
 
 from motifapi import MotifApi
 from motifapi.stream import StateMirror

@@ -55,6 +55,7 @@ class MyExperiment(ExperimentBase):
         self._olock = threading.Lock()
 
         self.load_osg('/home/loopbio/Documents/locustVR/stimulus/3posts_20cm_radius_z_at_50.osgt')     #('/home/loopbio/Documents/stimuli/ten_post_stimulus.osgt')
+        #self.load_osg('/home/loopbio/Documents/locustVR/stimulus/loop_cut_10cyl.osgt') 
         self.expTrial = -1
         self.replicate = -1
         self.tSwitch = 0
@@ -93,7 +94,7 @@ class MyExperiment(ExperimentBase):
 
 
         #*****************unmask!!!:
-        #self._motif.call('recording/start', filename=uID , metadata={})
+        self._motif.call('recording/start', filename=uID ,metadata={'foo': 1, 'bar': 'bob'})
 
         print('uniqueID ',uID)
 
@@ -107,6 +108,7 @@ class MyExperiment(ExperimentBase):
         #with self._olock:
         if self._origin is None:
             self._origin = x, y, z
+            self.log.info('new origin: %r' % (self._origin, ))
         ox, oy, oz = self._origin
 
         '''with self._olock:
@@ -150,7 +152,13 @@ class MyExperiment(ExperimentBase):
             try:
 
                 while nStimuli<=4:
-                    self.publish_state()
+                    t = time.time() - t0
+
+                    self.publish_state(loc_x=self.locPosition['x'],
+                                       loc_y=self.locPosition['y'],
+                                       exp_t=t,
+                                       exp_counter=self.counter,
+                                       exp_nstimuli=nStimuli)
 
                     #while 1 vielleicht aendern zu while self.start oder runforever oder variable xy=1, diese  
                     # bei if nStimuli==4 dann auf 0 setzen!!!
@@ -160,10 +168,14 @@ class MyExperiment(ExperimentBase):
                     if firstinitialized==False:
                         self.reset_origin()
                         self.updateStimuli(nStimuli)
+                        #self.move_node('Cylinder1' , 1000, 1000,  50)
+                        self.move_node('Cylinder0' , 1000,1000,50)
 
+                        #self.updateStimuli(nStimuli)
+                        firstinitialized=True
                         
                             
-                    if t>0*60:
+                    if t>0.5*60:
                         #change to 1.5*60!!!
                         for nPost in range(0,3):
                             #dist is the variable that is the outcome of the function distance
@@ -180,11 +192,11 @@ class MyExperiment(ExperimentBase):
 
                             if reached==True:
 
-                                if firstinitialized==False:
+                                if initialized==False:
                                     t_exp=t
                                     #unveraenderliche variable t_exp'''
                                     t_exp_trial=t
-                                    firstinitialized=True
+                                    initialized=True
                                     self.reset_origin()
                                     self.updateStimuli(nStimuli)
                                     print('nStimuli:', nStimuli)
@@ -222,7 +234,7 @@ class MyExperiment(ExperimentBase):
                                 print('*new post Position*', self.postPosition[0,:])
                                 reached=False
 
-                            if dist < 0.25 and reached == False: #0.25
+                            if dist < 0.28 and reached == False: #0.25
                                 #change to post_radius/2!!! b4 4.85 change to t_exp +10*60
                                 print(dist, 'distance')
                                 print('Locusts position at reaching', self.locPosition['x'],self.locPosition['y'])
@@ -271,7 +283,7 @@ class MyExperiment(ExperimentBase):
 
 
 
-                            if t> t_exp+12*60 or t>t_exp+5*60 and nStimuli == 0:  #3.8
+                            if t> t_exp+12*60 or t>t_exp+8*60 and nStimuli == 0:  #3.8
                             
 
                             #if t> t_exp+15*60:
@@ -282,7 +294,7 @@ class MyExperiment(ExperimentBase):
                                 print('time has reached t_exp of:',((t-t_exp)), 'min',  't=',t)
                                 print('sync: time.time',time.time())
 
-                                print('has reached post so far:', self.reacher)
+                                print('has reached post so far (exp, control0, c4):', self.reacher,self.control_counter0,self.control_counter4)
 
                                 print('************************************************************************')
                                 print(' ')
@@ -307,7 +319,7 @@ class MyExperiment(ExperimentBase):
                                     print('**********no post condition control**********')
                                     stimfourisreached = False
                                     #print('stim4 starts at t=',t_beginning_of_stim4)    
-                                if t > (t_beginning_of_stim4 + 5*60):
+                                if t > (t_beginning_of_stim4 + 8*60):
                                     #change to 5*60!!!
                                     print('total experiment time',t)
                                     print('Experiment completed')
@@ -318,7 +330,7 @@ class MyExperiment(ExperimentBase):
                                     #self._motif.call('recording/stop')
                                     #*****************unmask!!!:
 
-                                    #self.do_stop_recording()
+                                    self.do_stop_recording()
                                     sys.exit()
 
 
@@ -328,9 +340,12 @@ class MyExperiment(ExperimentBase):
                         output.write('%.8f, %.8f, %.8f,  %d, %.8f, %s\n' % (self.locPosition['x'],self.locPosition['y'],self.locPosition['z'], self.counter, t, str(nStimuli)))
             except KeyboardInterrupt:        
                 #*****************unmask!!!:
+                self.move_node('Cylinder1' , 1000, 1000,  50)
+                self.move_node('Cylinder0' , 1000, 1000,  50)
 
-                #self.do_stop_recording()
+                self.do_stop_recording()
                 print('KeyboardInterrupt, uID, time exp, time',self.expId, t,time.ctime(int(time.time())) )
+
                 sys.exit()
 
     def reset_origin(self):
@@ -462,7 +477,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     e = MyExperiment.new_osg(debug=args.debug_display)
-    e.publish_state(msg='starting')
     #e.start needed, if record = false, no call    self.do_start_recording() again (in base class)
 
     e.start(record=False)

@@ -13,8 +13,8 @@ from locustvr.experiment import ExperimentBase
 
 replication = 3
 
-projectDB = '/home/loopbio/Documents/locustVR/databases/locustProjects_19_12_09.db'      #locustProjects_19_11_28.db'  #Projects_2post.db
-expDB = '/home/loopbio/Documents/locustVR/databases/locustExperiments_19_12_09.db'            #locustExperiments_19_11_28.db'  #Experiments_2post.db
+projectDB = '/home/loopbio/Documents/locustVR/databases/locustProjects_20_01_07.db'      #locustProjects_19_11_28.db'  #Projects_2post.db
+expDB = '/home/loopbio/Documents/locustVR/databases/locustExperiments_20_01_07.db'            #locustExperiments_19_11_28.db'  #Experiments_2post.db
 pathData = '/home/loopbio/Documents/locustVR/data/'
 
 
@@ -170,6 +170,8 @@ class MyExperiment(ExperimentBase):
                         self.updateStimuli(nStimuli)
                         #self.move_node('Cylinder1' , 1000, 1000,  50)
                         self.move_node('Cylinder0' , 1000,1000,50)
+                        self.move_node('Cylinder1' , 1000,1000,50)
+                        self.move_node('Cylinder2' , 1000,1000,50)
 
                         #self.updateStimuli(nStimuli)
                         firstinitialized=True
@@ -318,6 +320,7 @@ class MyExperiment(ExperimentBase):
                                     t_beginning_of_stim4 = t
                                     print('**********no post condition control**********')
                                     stimfourisreached = False
+
                                     #print('stim4 starts at t=',t_beginning_of_stim4)    
                                 if t > (t_beginning_of_stim4 + 8*60):
                                     #change to 5*60!!!
@@ -329,6 +332,8 @@ class MyExperiment(ExperimentBase):
                                     print('sync: time.time',time.time(), datetime.datetime.now(),'unique ID:',self.expId)
                                     #self._motif.call('recording/stop')
                                     #*****************unmask!!!:
+                                    self.move_node('Cylinder0' , 1000, 1000,  50)
+
 
                                     self.do_stop_recording()
                                     sys.exit()

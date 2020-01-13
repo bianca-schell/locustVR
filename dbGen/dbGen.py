@@ -3,14 +3,14 @@ import itertools
 import numpy as np
 from random import shuffle
 
-projectDB = 'locustProjects_20_01_07.db'   #'locustProjects_2post_2m_deg30_45_60.db'
-expDB = 'locustExperiments_20_01_07.db' 	#'locustExperiments_2post_2m_deg30_45_60.db'
+projectDB = 'locustProjects_3choice.db'   #'locustProjects_2post_2m_deg30_45_60.db'
+expDB = 'locustExperiments_3choice.db' 	#'locustExperiments_2post_2m_deg30_45_60.db'
 
 project = 'DecisionGeometry'
 
 nPosts = 3	#10
 
-posts = range(2,3)  #1,2 : 1 post, 2,3 two post
+posts = range(3,4)  #1,2 : 1 post, 2,3 two post
 posts = list(itertools.chain.from_iterable(itertools.repeat(x, 10) for x in posts))
 distances = [2.0]	#in meter
 start_ang_split = 8

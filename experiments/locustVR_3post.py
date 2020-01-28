@@ -270,6 +270,16 @@ class MyExperiment(ExperimentBase):
                                 self.bad_locust += 1
                                 t_exp_trial=t
 
+                            if distance(self.locPosition, [0,0] ,  True) > (2.2):
+                                print('Locust has exceeded rad of > 2.2')
+                                print('************************************************************************')
+                                print(' ')
+                                self.counter += 1
+                                reached=True
+                                #self.bad_locust += 1
+                                t_exp_trial=t
+
+
                             if t > t_exp_trial+5*60:
                                 #7*60: sometimes just before reaching post, time ends, time locust can spend to reach one post
                                 print('Locusts position at reaching t_exp', self.locPosition['x'],self.locPosition['y'])

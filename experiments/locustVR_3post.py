@@ -13,8 +13,8 @@ from locustvr.experiment import ExperimentBase
 
 replication = 3
 
-projectDB = '/home/loopbio/Documents/locustVR/databases/locustProjects_3choice.db'      #locustProjects_19_11_28.db'  #Projects_2post.db
-expDB = '/home/loopbio/Documents/locustVR/databases/locustExperiments_3choice.db'            #locustExperiments_19_11_28.db'  #Experiments_2post.db
+projectDB = '/home/loopbio/Documents/locustVR/databases/locustProjects_3choice_feb.db'      #locustProjects_19_11_28.db'  #Projects_2post.db
+expDB = '/home/loopbio/Documents/locustVR/databases/locustExperiments_3choice_feb.db'            #locustExperiments_19_11_28.db'  #Experiments_2post.db
 pathData = '/home/loopbio/Documents/locustVR/data/'
 
 
@@ -257,7 +257,7 @@ class MyExperiment(ExperimentBase):
                                 print('reached, abs, control 0 / 4',self.reacher, self.control_counter0,self.control_counter4)
 
                     
-                            if distance(self.locPosition, self.postPosition[0,:] ,  True) > (0.25+self.postDistance) and distance(self.locPosition, self.postPosition[2,:] ,  True)> (0.25+self.postDistance) and distance(self.locPosition, self.postPosition[0,:] ,  True) > (0.25+self.postDistance):
+                            if distance(self.locPosition, self.postPosition[0,:] ,  True) > (0.25+self.postDistance) and distance(self.locPosition, self.postPosition[1,:] ,  True)> (0.25+self.postDistance) and distance(self.locPosition, self.postPosition[2,:] ,  True) > (0.25+self.postDistance):
 
                             #ending at dist/t expiry, locusts that dont do the job very well:
                             #if dist > 2.3 and dist < 900:
@@ -295,7 +295,7 @@ class MyExperiment(ExperimentBase):
 
 
 
-                            if t> t_exp+12*60 or t>t_exp+8*60 and nStimuli == 0:  #3.8
+                            if t> t_exp+12*60 or t>t_exp+6*60 and nStimuli == 0:  #3.8
                             
 
                             #if t> t_exp+15*60:
@@ -332,7 +332,7 @@ class MyExperiment(ExperimentBase):
                                     stimfourisreached = False
 
                                     #print('stim4 starts at t=',t_beginning_of_stim4)    
-                                if t > (t_beginning_of_stim4 + 8*60):
+                                if t > (t_beginning_of_stim4 + 6*60):
                                     #change to 5*60!!!
                                     print('total experiment time',t)
                                     print('Experiment completed')

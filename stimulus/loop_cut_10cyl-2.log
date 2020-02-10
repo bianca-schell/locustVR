@@ -1,0 +1,126 @@
+obj Cylinder8
+
+Type of Cylinder8 is MESH
+exporting object Cylinder8
+mesh_object is Cylinder.010
+mesh Cylinder8 with material Material.001
+vertexes reduced from 31156 to 15592
+faces 7804
+WARNING update material animation not yet supported
+-----------------------------------------
+vertex groups False False 
+obj Cylinder9
+
+Type of Cylinder9 is MESH
+exporting object Cylinder9
+mesh_object is Cylinder.009
+mesh Cylinder9 with material Material.001
+vertexes reduced from 31156 to 15592
+faces 7804
+-----------------------------------------
+vertex groups False False 
+obj Cylinder7
+
+Type of Cylinder7 is MESH
+exporting object Cylinder7
+mesh_object is Cylinder.008
+mesh Cylinder7 with material Material.001
+vertexes reduced from 31156 to 15592
+faces 7804
+-----------------------------------------
+vertex groups False False 
+obj Cylinder6
+
+Type of Cylinder6 is MESH
+exporting object Cylinder6
+mesh_object is Cylinder.007
+mesh Cylinder6 with material Material.001
+vertexes reduced from 31156 to 15592
+faces 7804
+-----------------------------------------
+vertex groups False False 
+obj Cylinder5
+
+Type of Cylinder5 is MESH
+exporting object Cylinder5
+mesh_object is Cylinder.006
+mesh Cylinder5 with material Material.001
+vertexes reduced from 31156 to 15592
+faces 7804
+-----------------------------------------
+vertex groups False False 
+obj Cylinder4
+
+Type of Cylinder4 is MESH
+exporting object Cylinder4
+mesh_object is Cylinder.005
+mesh Cylinder4 with material Material.001
+vertexes reduced from 31156 to 15592
+faces 7804
+-----------------------------------------
+vertex groups False False 
+obj Cylinder3
+
+Type of Cylinder3 is MESH
+exporting object Cylinder3
+mesh_object is Cylinder.004
+mesh Cylinder3 with material Material.001
+vertexes reduced from 31156 to 15592
+faces 7804
+-----------------------------------------
+vertex groups False False 
+obj Cylinder2
+
+Type of Cylinder2 is MESH
+exporting object Cylinder2
+mesh_object is Cylinder.003
+mesh Cylinder2 with material Material.001
+vertexes reduced from 31156 to 15592
+faces 7804
+-----------------------------------------
+vertex groups False False 
+obj Cylinder1
+
+Type of Cylinder1 is MESH
+exporting object Cylinder1
+mesh_object is Cylinder.002
+mesh Cylinder1 with material Material.001
+vertexes reduced from 31156 to 15592
+faces 7804
+-----------------------------------------
+vertex groups False False 
+obj Cube
+
+Type of Cube is MESH
+exporting object Cube
+mesh_object is Cube.001
+mesh Cube with material Material.002
+vertexes 24
+faces 6
+WARNING update material animation not yet supported
+------------------------------------
+vertex groups False False 
+obj Cylinder0
+
+Type of Cylinder0 is MESH
+exporting object Cylinder0
+mesh_object is Cylinder
+mesh Cylinder0 with material Material.001
+vertexes reduced from 31156 to 15592
+faces 7804
+-----------------------------------------
+vertex groups False False 
+geode GeodeCylinder.010
+geode GeodeCylinder.009
+geode GeodeCylinder.008
+geode GeodeCylinder.007
+geode GeodeCylinder.006
+geode GeodeCylinder.005
+geode GeodeCylinder.004
+geode GeodeCylinder.003
+geode GeodeCylinder.002
+geode GeodeCube.001
+geode GeodeCylinder
+write file to /home/bianca/Documents/github/locustVR/stimulus/loop_cut_10cyl-2.osgt
+copy file /home/bianca/Documents/github/zebraVR/stimulus/textures/black.png to /home/bianca/Documents/github/locustVR/stimulus/textures/black.png
+Check log file /home/bianca/Documents/github/locustVR/stimulus/loop_cut_10cyl-2.log

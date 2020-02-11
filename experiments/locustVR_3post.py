@@ -295,7 +295,7 @@ class MyExperiment(ExperimentBase):
 
 
 
-                            if t> t_exp+12*60 or t>t_exp+6*60 and nStimuli == 0:  #3.8
+                            if t> t_exp+12*60 or t>t_exp+4*60 and nStimuli == 0:  #3.8
                             
 
                             #if t> t_exp+15*60:
@@ -332,7 +332,7 @@ class MyExperiment(ExperimentBase):
                                     stimfourisreached = False
 
                                     #print('stim4 starts at t=',t_beginning_of_stim4)    
-                                if t > (t_beginning_of_stim4 + 6*60):
+                                if t > (t_beginning_of_stim4 + 3*60):
                                     #change to 5*60!!!
                                     print('total experiment time',t)
                                     print('Experiment completed')

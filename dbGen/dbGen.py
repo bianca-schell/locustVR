@@ -3,8 +3,8 @@ import itertools
 import numpy as np
 from random import shuffle
 
-projectDB = 'locustProjects_3choice_feb.db'   #'locustProjects_2post_2m_deg30_45_60.db'
-expDB = 'locustExperiments_3choice_feb.db' 	#'locustExperiments_2post_2m_deg30_45_60.db'
+projectDB = 'locustProjects_3choice_feb3.db'   #'locustProjects_2post_2m_deg30_45_60.db'
+expDB = 'locustExperiments_3choice_feb3.db' 	#'locustExperiments_2post_2m_deg30_45_60.db'
 
 project = 'DecisionGeometry'
 

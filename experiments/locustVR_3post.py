@@ -13,8 +13,8 @@ from locustvr.experiment import ExperimentBase
 
 replication = 3
 
-projectDB = '/home/loopbio/Documents/locustVR/databases/locustProjects_3choice_feb2.db'      #locustProjects_19_11_28.db'  #Projects_2post.db
-expDB = '/home/loopbio/Documents/locustVR/databases/locustExperiments_3choice_feb2.db'            #locustExperiments_19_11_28.db'  #Experiments_2post.db
+projectDB = '/home/loopbio/Documents/locustVR/databases/locustProjects_3choice_feb3.db'      #locustProjects_19_11_28.db'  #Projects_2post.db
+expDB = '/home/loopbio/Documents/locustVR/databases/locustExperiments_3choice_feb3.db'            #locustExperiments_19_11_28.db'  #Experiments_2post.db
 pathData = '/home/loopbio/Documents/locustVR/data/'
 
 
@@ -94,7 +94,8 @@ class MyExperiment(ExperimentBase):
 
 
         #*****************unmask!!!:
-        self._motif.call('recording/start', filename=uID ,metadata={'foo': 1, 'bar': 'bob'})
+        self._motif.call('recording/start', filename=uID ,metadata={})  #{'uID': self.expId, 'bar': 'bob'})
+
 
         print('uniqueID ',uID)
 

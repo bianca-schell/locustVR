@@ -1,3 +1,10 @@
+scripts:
+
+3choice
+Documents/locustVR/experiments/locustVR_3post.py --debug-mode
+/home/loopbio/Documents/locustVR/experiments/locustVR_2post-2.py --debug-display
+
+*********instructions**********
 turn on observation cam first, then recording control
 output of the script can be seen:
 
@@ -7,7 +14,10 @@ either (when run via motif recording system) clicking in the supervisor 5th line
 source ~/Development/sphevr/venv/bin/activate
 python ~/Documents/locustVR/experiments/test_rendered4.py
 
+with debug mode:
+locustExperiments_19-11-26.db --debug-display
 
+/home/loopbio/Development/FreemooVRPrivate/bin/display_server --base-path /home/loopbio/Development/FreemooVRPrivate/ --config /home/loopbio/Development/sphevr/host_files/freemoovr/locustvr-01-on-devmonitor.json --cubemap-resolution 2048 --geometry-texture-resolution 2048 --port 8888 --port 8889 --display-mode overview --observer-radius -0.05
 #path geaendert- wenn das ein problem macht dann wieder experiments zurück in Docu/experiments
 
 #stimulus input without database interaction ---> manually_moving_posts.py
@@ -15,12 +25,21 @@ python ~/Documents/locustVR/experiments/test_rendered4.py
 
 
 ************** HINTS *****************
+
+PID: 19234 at beginning of experiment in terminal
+run command:
+kill -USR2 19234
+tells you where in script it is
+
+
+if communication between position and script breaks down: clear all logs of VR devices
+
 wirte in db deaktiviert #e.writeInDb()
 
 experimentBase script is in
 development locustvr/experiment/base.py
 
-
+locustvr_control_camera_show
 
 stimulus_osg is in development/freemovrprivate/src/freemovr/proxy
 
@@ -84,6 +103,16 @@ DONE
   # change the path of csv, db ...
                 
          # find out how to put coordinates        
+
+
+******************************remove data
+
+so you can in a terminal
+
+$ su labadmin
+$ cd /home/loopbio/DATA/
+$ sudo rm -r XXX
+
 
 
 

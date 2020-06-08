@@ -13,13 +13,13 @@ from locustvr.experiment import ExperimentBase
 
 replication = 5
 
-projectDB = '/home/loopbio/Documents/locustVR/databases/locustProjects_3choice_feb3.db'      #locustProjects_19_11_28.db'  #Projects_2post.db
-expDB = '/home/loopbio/Documents/locustVR/databases/locustExperiments_3choice_feb3.db'            #locustExperiments_19_11_28.db'  #Experiments_2post.db
+projectDB = '/home/loopbio/Documents/locustVR/databases/locustProjects_2_3post.db'      #locustProjects_19_11_28.db'  #Projects_2post.db
+expDB = '/home/loopbio/Documents/locustVR/databases/locustExperiments_2_3post.db'        #locustExperiments_3choice_feb3.db'            #locustExperiments_19_11_28.db'  #Experiments_2post.db   
 pathData = '/home/loopbio/Documents/locustVR/data/'
 
 
 project = 'DecisionGeometry'
-experimenter = 'BS'
+experimenter = 'JW'
 a = 0
 running = 1
 numberPost = 3
@@ -86,6 +86,11 @@ class MyExperiment(ExperimentBase):
         self.control_counter4=0
         self.control_counter0=0
         self.reacher =0
+        self.post0counter_2post=0
+        self.post1counter_2post=0
+        self.post0counter=0
+        self.post1counter=0
+        self.post2counter=0
         self.running = True
         self.locPosition = {'x':0,'y':0,'z':0}
         #self.resetting= False
@@ -94,7 +99,7 @@ class MyExperiment(ExperimentBase):
 
 
         #*****************unmask!!!:
-        self._motif.call('recording/start', filename=uID ,metadata={})  #{'uID': self.expId, 'bar': 'bob'})
+        #self._motif.call('recording/start', filename=uID ,metadata={})  #{'uID': self.expId, 'bar': 'bob'})
 
 
         print('uniqueID ',uID)
@@ -146,6 +151,9 @@ class MyExperiment(ExperimentBase):
         nStimuli = 0
         n=1
         path = pathDefine(pathData,self.expId)
+        #now = datetime.datetime.now()
+        #print("Current date and time : ")
+        #print(now.strftime('%Y-%m-%d %H:%M:%S'))
         #print('saved in csv in:', path)
         #opn the csv file and then 'a' for appending the next line, instead of overwriting ('w')
         with open(path+'/results.csv', 'a') as output:
@@ -178,7 +186,7 @@ class MyExperiment(ExperimentBase):
                         firstinitialized=True
                         
                             
-                    if t>0.5*60:
+                    if t>0.*60:
                         #change to 1.5*60!!!
                         for nPost in range(0,3):
                             #dist is the variable that is the outcome of the function distance
@@ -248,14 +256,26 @@ class MyExperiment(ExperimentBase):
                                 self.counter += 1
                                 reached=True
                                 t_exp_trial=t
-                                if nStimuli == 0:
+                                if nStimuli == 0 or nStimuli == 4:
                                     self.control_counter0 +=1   
                                     print('control0 reached',self.control_counter0)
-                                elif nStimuli == 4:
-                                    self.control_counter4 +=1   
+
+                                    if distance(self.locPosition, self.postPosition[0,:] ,  True) < 0.3:
+                                        self.post0counter_2post += 1
+                                    if distance(self.locPosition, self.postPosition[1,:] ,  True) < 0.3:
+                                        self.post1counter_2post += 1
+
                                 else:
                                     self.reacher +=1
-                                print('reached, abs, control 0 / 4',self.reacher, self.control_counter0,self.control_counter4)
+                                    if distance(self.locPosition, self.postPosition[0,:] ,  True) < 0.3:
+                                        self.post0counter += 1
+                                    if distance(self.locPosition, self.postPosition[1,:] ,  True) < 0.3:
+                                        self.post1counter += 1
+                                    if distance(self.locPosition, self.postPosition[2,:] ,  True) < 0.3:
+                                        self.post2counter += 1
+
+                                print('reached, control ',self.reacher, self.control_counter0)
+
 
                     
                             if distance(self.locPosition, self.postPosition[0,:] ,  True) > (0.25+self.postDistance) and distance(self.locPosition, self.postPosition[1,:] ,  True)> (0.25+self.postDistance) and distance(self.locPosition, self.postPosition[2,:] ,  True) > (0.25+self.postDistance):
@@ -263,7 +283,7 @@ class MyExperiment(ExperimentBase):
                             #ending at dist/t expiry, locusts that dont do the job very well:
                             #if dist > 2.3 and dist < 900:
                                 #distance locust can max. reach without reaching post
-                                print('Locust has reached a distance of > 2.3')
+                                print('Locust has reached a distance of > 3.3')
                                 print('************************************************************************')
                                 print(' ')
                                 self.counter += 1
@@ -271,8 +291,8 @@ class MyExperiment(ExperimentBase):
                                 self.bad_locust += 1
                                 t_exp_trial=t
 
-                            if distance(self.locPosition, [0,0] ,  True) > (2.2):
-                                print('Locust has exceeded rad of > 2.2')
+                            if distance(self.locPosition, [0,0] ,  True) > (3.4):
+                                print('Locust has exceeded rad of > 3.4')
                                 print('************************************************************************')
                                 print(' ')
                                 self.counter += 1
@@ -296,7 +316,7 @@ class MyExperiment(ExperimentBase):
 
 
 
-                            if t> t_exp+12*60 or t>t_exp+6*60 and nStimuli == 0:  #3.8
+                            if t> t_exp+5.5*60 or t>t_exp+5*60 and nStimuli == 0:  #3.8
                             
 
                             #if t> t_exp+15*60:
@@ -307,7 +327,7 @@ class MyExperiment(ExperimentBase):
                                 print('time has reached t_exp of:',((t-t_exp)), 'min',  't=',t)
                                 print('sync: time.time',time.time())
 
-                                print('has reached post so far (exp, control0, c4):', self.reacher,self.control_counter0,self.control_counter4)
+                                print('has reached post so far (3post, 2post_beg, 2post_end):', self.reacher,self.control_counter0,self.control_counter4)
 
                                 print('************************************************************************')
                                 print(' ')
@@ -333,14 +353,26 @@ class MyExperiment(ExperimentBase):
                                     stimfourisreached = False
 
                                     #print('stim4 starts at t=',t_beginning_of_stim4)    
-                                if t > (t_beginning_of_stim4 + 6*60):
+                                if t > (t_beginning_of_stim4 + 1*60):
                                     #change to 5*60!!!
                                     print('total experiment time',t)
                                     print('Experiment completed')
                                     #print( 't',t,'stim4 beginning', t_beginning_of_stim4)
-                                    print('has reached the post:',self.reacher, 'control0 / 4',self.control_counter0, self.control_counter4 )
+                                    print('has reached the 3 posts:',self.reacher)
+                                    print('has reached the 2 posts:',self.control_counter0, self.control_counter4 )
+                                    
+                                    print('unique ID:',self.expId)
+                                    print('*****************************************************')
+
+                                    print('*****in 2 choice has reached post0 / post1:', self.post0counter_2post, self.post1counter_2post)
+                                    print('*****in 3 choice has reached post0 / post1:', self.post0counter, self.post1counter, self.post2counter)
+                                    now = datetime.datetime.now()
+                                    
+                                    print ('date: ',now.strftime("%Y-%m-%d %H:%M:%S"))
+                                    print('*****************************************************')
+
                                     print('bad locust:',self.bad_locust)
-                                    print('sync: time.time',time.time(), datetime.datetime.now(),'unique ID:',self.expId)
+                                    #print('sync: time.time',time.time(), datetime.datetime.now(),'unique ID:',self.expId)
                                     #self._motif.call('recording/stop')
                                     #*****************unmask!!!:
                                     self.move_node('Cylinder2' , 1000, 1000,  50)

@@ -3,18 +3,18 @@ import itertools
 import numpy as np
 from random import shuffle
 
-projectDB = 'locustProjects_3choice_feb3.db'   #'locustProjects_2post_2m_deg30_45_60.db'
-expDB = 'locustExperiments_3choice_feb3.db' 	#'locustExperiments_2post_2m_deg30_45_60.db'
+projectDB = 'locustProjects_bias.db'
+expDB = 'locustExperiments_bias.db'
 
-project = 'DecisionGeometry'
+project = 'DecisionBias'
 
-nPosts = 3	#10
+nPosts = 3
 
-posts = range(3,4)  #1,2 : 1 post, 2,3 two post
+posts = range(2,3)
 posts = list(itertools.chain.from_iterable(itertools.repeat(x, 10) for x in posts))
-distances = [2.0]	#in meter
-start_ang_split = 8
-angles2 = [np.pi/6, np.pi/4, np.pi]			#degree: 60, 70, 180:  [np.pi/3, 7*np.pi/18, np.pi]
+distances = [3.0]	#in meter
+start_ang_split = 16
+angles2 = [np.pi/3, 7*np.pi/18, np.pi]			#degree: 60, 70, 180:  [np.pi/3, 7*np.pi/18, np.pi]
 angles3 = [4.5*np.pi/18, 3*np.pi/18, 2*np.pi/3] #original: angles3 = [5*np.pi/18, 5*np.pi/18, 2*np.pi/3] #changed: 45,30,120
 
 
@@ -85,26 +85,8 @@ def defineStimuli(expType, nSwitch, nReplicates=2, N=2, d=1.0, ang=np.pi/6, pick
 	dataReplicates = []
 	dataControl = dataController()
 
-	if expType == 'nPosts':
-		data = []
-		# define stimuli nSwitch-2 times since we have two control stimuli - one in the beginning; other in the end
-		for k in range(0,nSwitch-2):
-			data.append([])
-			# pick random number of posts
-			N = np.random.randint(np.max(posts)-np.min(posts)+1)+np.min(posts)
-			# pick a random start angle (one of six angles obtained by splitting angle of symmetry for N posts in six parts)
-			start_ang = 2*np.pi*(np.random.randint(start_ang_split)+1) / start_ang_split
-			for j in range(0,nPosts):
-				if j < N:
-					r = d
-					theta = start_ang + j*2*np.pi*ang / (N*6)
-					x = r*np.cos(theta)
-					y = r*np.sin(theta)
-					dataStimuli = {'position' : (x,y), 'distance' : r, 'angle' : 2*np.pi*ang / (N*6)}
-				else:
-					dataStimuli = 'None'
-				data[-1].append(str(dataStimuli))	
-	elif expType == 'angles':
+
+	if expType == 'angles':
 		data = []
 		# define stimuli nSwitch-2 times since we have two control stimuli - one in the beginning; other in the end
 		for k in range(0,nSwitch-2):

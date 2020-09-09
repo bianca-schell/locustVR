@@ -11,7 +11,7 @@ import math
 from locustvr.experiment import ExperimentBase
 
 
-replication = 5
+replication = 6
 
 projectDB = '/home/loopbio/Documents/locustVR/databases/locustProjects_2_3post-june.db'      #locustProjects_19_11_28.db'  #Projects_2post.db
 expDB = '/home/loopbio/Documents/locustVR/databases/locustExperiments_2_3post-june.db'        #locustExperiments_3choice_feb3.db'            #locustExperiments_19_11_28.db'  #Experiments_2post.db   

@@ -1,0 +1,21 @@
+obj Cube
+
+Type of Cube is MESH
+exporting object Cube
+mesh_object is Cube
+mesh Cube with material Material
+vertexes 24
+faces 6
+WARNING update material animation not yet supported
+WARNING the texture <bpy_struct, MaterialTextureSlot("Tex")> has no Image, skip it
+--------------------------------
+vertex groups False False 
+obj Lamp
+
+Type of Lamp is LAMP
+obj Camera
+
+Type of Camera is CAMERA
+geode GeodeCube
+write file to /Users/vivekhsridhar/Documents/Code/Python/locustVR/stimulus/bias_stimulus2.osgt
+Check log file /Users/vivekhsridhar/Documents/Code/Python/locustVR/stimulus/bias_stimulus2.log

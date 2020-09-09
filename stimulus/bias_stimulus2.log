@@ -1,3 +1,39 @@
+obj Root
+
+Type of Root is EMPTY
+
+Type of Cylinder0 is MESH
+exporting object Cylinder0
+mesh_object is Cylinder
+mesh Cylinder0 with material Material.001
+vertexes reduced from 308 to 192
+faces 92
+WARNING update material animation not yet supported
+-----------------------------------------
+vertex groups False False 
+
+Type of Cylinder1 is MESH
+exporting object Cylinder1
+mesh_object is Cylinder.001
+mesh Cylinder1 with material Material.002
+vertexes reduced from 308 to 192
+faces 92
+WARNING update material animation not yet supported
+-----------------------------------------
+vertex groups False False 
+
+Type of Cylinder2 is MESH
+exporting object Cylinder2
+mesh_object is Cylinder.002
+mesh Cylinder2 with material Material.003
+vertexes reduced from 308 to 192
+faces 92
+WARNING update material animation not yet supported
+-----------------------------------------
+vertex groups False False 
+obj Cylinder0
+obj Cylinder1
+obj Cylinder2
 obj Cube
 
 Type of Cube is MESH
@@ -7,15 +43,15 @@ mesh Cube with material Material
 vertexes 24
 faces 6
 WARNING update material animation not yet supported
-WARNING the texture <bpy_struct, MaterialTextureSlot("Tex")> has no Image, skip it
 --------------------------------
 vertex groups False False 
-obj Lamp
-
-Type of Lamp is LAMP
-obj Camera
-
-Type of Camera is CAMERA
+geode GeodeCylinder
+geode GeodeCylinder.001
+geode GeodeCylinder.002
 geode GeodeCube
 write file to /Users/vivekhsridhar/Documents/Code/Python/locustVR/stimulus/bias_stimulus2.osgt
+copy file /Users/vivekhsridhar/Documents/Code/Python/fly-matrix/stimulus/textures/white.png to /Users/vivekhsridhar/Documents/Code/Python/locustVR/stimulus/textures/white.png
+copy file /Users/vivekhsridhar/Documents/Code/Python/fly-matrix/stimulus/textures/black.png to /Users/vivekhsridhar/Documents/Code/Python/locustVR/stimulus/textures/black.png
+copy file /Users/vivekhsridhar/Documents/Code/Python/fly-matrix/stimulus/textures/black.png to /Users/vivekhsridhar/Documents/Code/Python/locustVR/stimulus/textures/black.png
+copy file /Users/vivekhsridhar/Documents/Code/Python/fly-matrix/stimulus/textures/grey100.png to /Users/vivekhsridhar/Documents/Code/Python/locustVR/stimulus/textures/grey100.png
 Check log file /Users/vivekhsridhar/Documents/Code/Python/locustVR/stimulus/bias_stimulus2.log

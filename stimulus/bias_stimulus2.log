@@ -52,6 +52,6 @@ geode GeodeCube
 write file to /Users/vivekhsridhar/Documents/Code/Python/locustVR/stimulus/bias_stimulus2.osgt
 copy file /Users/vivekhsridhar/Documents/Code/Python/fly-matrix/stimulus/textures/white.png to /Users/vivekhsridhar/Documents/Code/Python/locustVR/stimulus/textures/white.png
 copy file /Users/vivekhsridhar/Documents/Code/Python/fly-matrix/stimulus/textures/black.png to /Users/vivekhsridhar/Documents/Code/Python/locustVR/stimulus/textures/black.png
-copy file /Users/vivekhsridhar/Documents/Code/Python/fly-matrix/stimulus/textures/black.png to /Users/vivekhsridhar/Documents/Code/Python/locustVR/stimulus/textures/black.png
 copy file /Users/vivekhsridhar/Documents/Code/Python/fly-matrix/stimulus/textures/grey100.png to /Users/vivekhsridhar/Documents/Code/Python/locustVR/stimulus/textures/grey100.png
+copy file /Users/vivekhsridhar/Documents/Code/Python/fly-matrix/stimulus/textures/black.png to /Users/vivekhsridhar/Documents/Code/Python/locustVR/stimulus/textures/black.png
 Check log file /Users/vivekhsridhar/Documents/Code/Python/locustVR/stimulus/bias_stimulus2.log

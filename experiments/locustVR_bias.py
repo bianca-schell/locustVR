@@ -38,11 +38,9 @@ def pathDefine(path,ids, params=[]):
 
 
 #fct distance between locust position and post
-def distance(pos0, pos1, post):
+def distance(pos0, pos1):
     dx = pos0['x'] - pos1[0]
     dy = pos0['y'] - pos1[1]
-        #print ('x+y:',x,y)
-        #print(pos0['x'], dx)
 
     return math.sqrt(dx**2 + dy**2)
 
@@ -54,7 +52,7 @@ class MyExperiment(ExperimentBase):
         self._origin = None
         self._olock = threading.Lock()
 
-        self.load_osg('/home/loopbio/Documents/locustVR/stimulus/3posts_20cm_radius_z_at_50.osgt')     #('/home/loopbio/Documents/stimuli/ten_post_stimulus.osgt')
+        self.load_osg('/home/loopbio/Documents/locustVR/stimulus/bias_stimulus.osgt')     #('/home/loopbio/Documents/stimuli/ten_post_stimulus.osgt')
         self.expTrial = -1
         self.replicate = -1
         self.tSwitch = 0
@@ -128,23 +126,19 @@ class MyExperiment(ExperimentBase):
     
     def running_writing_csv(self):
         t0 = time.time()
-        firstinitialized=False
-        initialized=False
-        reached=True
-        reset= False
-        go=False
-        #sl_t0 = time.time()
-        #lastMessage = True
-        stimfourisreached=True
+        firstinitialized = False
+        initialized = False
+        reached = True
+        
+        stimfourisreached = True
         nStimuli = 0
-        n=1
-        path = pathDefine(pathData,self.expId)
-        #print('saved in csv in:', path)
+        n = 1
+        path = pathDefine(pathData, self.expId)
+        
         #opn the csv file and then 'a' for appending the next line, instead of overwriting ('w')
-        with open(path+'/results.csv', 'a') as output:
-            print('sync: time.time',time.time())
+        with open(path + '/results.csv', 'a') as output:
 
-            while nStimuli<=4:
+            while nStimuli <= 4:
                 self.publish_state()
 
                 #while 1 vielleicht aendern zu while self.start oder runforever oder variable xy=1, diese  
@@ -152,34 +146,33 @@ class MyExperiment(ExperimentBase):
                 #time starts at t = t0=0
                 t = time.time() - t0
 
-                if firstinitialized==False:
+                if firstinitialized == False:
                     self.reset_origin()
                     self.updateStimuli(nStimuli)
 
                     
                         
-                if t>0*60:
+                if t > 0*60:
                     #change to 1.5*60!!!
                     for nPost in range(0,3):
                         #dist is the variable that is the outcome of the function distance
-                        # ':'means take all the values in that dimension which are x and y
-                        dist = distance(self.locPosition, self.postPosition[nPost,:] ,  True)
-                        if self.rand%100000==0 and reached == False and dist<800:
+                        dist = distance(self.locPosition, self.postPosition[nPost,:])
+                        if self.rand % 100000 == 0 and reached == False and dist < 800:
                             print('the distance to post %d is:' %(nPost),dist)
                         
-                            if self.rand%1000000==0:
-                                print('min_absolut:', t/60, 'time spend on stimulus', (t-t_exp))
-                            if self.rand%500000==0:
+                            if self.rand%1000000 == 0:
+                                print('min_absolut:', t/60, 'time spend on stimulus', (t - t_exp))
+                            if self.rand%500000 == 0:
                                 print('***locpos', self.locPosition['x'],self.locPosition['y'])
 
 
-                        if reached==True:
+                        if reached == True:
 
-                            if firstinitialized==False:
-                                t_exp=t
+                            if firstinitialized == False:
+                                t_exp = t
                                 #unveraenderliche variable t_exp'''
-                                t_exp_trial=t
-                                firstinitialized=True
+                                t_exp_trial = t
+                                firstinitialized = True
                                 self.reset_origin()
                                 self.updateStimuli(nStimuli)
                                 print('nStimuli:', nStimuli)
@@ -215,7 +208,7 @@ class MyExperiment(ExperimentBase):
                             print('*Locusts position after reset*', self.locPosition['x'],self.locPosition['y'])
                             #should be equal to old post pos:
                             print('*new post Position*', self.postPosition[0,:])
-                            reached=False
+                            reached = False
 
                         if dist < 0.25 and reached == False: #0.25
                             #change to post_radius/2!!! b4 4.85 change to t_exp +10*60
@@ -227,19 +220,19 @@ class MyExperiment(ExperimentBase):
                             print(' ')
                             self.counter += 1
                             reached=True
-                            t_exp_trial=t
+                            t_exp_trial = t
                             if nStimuli == 0:
-                                self.control_counter0 +=1   
+                                self.control_counter0 += 1
                                 print('control0 reached',self.control_counter0)
                             elif nStimuli == 4:
-                                self.control_counter4 +=1   
+                                self.control_counter4 += 1   
                             else:
-                                self.reacher +=1
-                            print('reached, abs, control 0 / 4',self.reacher, self.control_counter0,self.control_counter4)
+                                self.reacher += 1
+                            print('reached, abs, control 0 / 4', self.reacher, self.control_counter0, self.control_counter4)
 
 
                         
-                        if distance(self.locPosition, self.postPosition[0,:] ,  True) > (0.25+self.postDistance) and distance(self.locPosition, self.postPosition[1,:] ,  True)> (0.25+self.postDistance) and dist < 900:
+                        if distance(self.locPosition, self.postPosition[0,:]) > (0.25 + self.postDistance) and distance(self.locPosition, self.postPosition[1,:]) > (0.25 + self.postDistance) and dist < 900:
 
                         #ending at dist/t expiry, locusts that dont do the job very well:
                         #if dist > 2.3 and dist < 900:
@@ -248,11 +241,11 @@ class MyExperiment(ExperimentBase):
                             print('************************************************************************')
                             print(' ')
                             self.counter += 1
-                            reached=True
+                            reached = True
                             self.bad_locust += 1
-                            t_exp_trial=t
+                            t_exp_trial = t
 
-                        if t > t_exp_trial+5*60:
+                        if t > t_exp_trial + 5*60:
                             #7*60: sometimes just before reaching post, time ends, time locust can spend to reach one post
                             print('Locusts position at reaching t_exp', self.locPosition['x'],self.locPosition['y'])
                             print('*******************************stimulus',nStimuli,'trial:',self.counter,': times up***********************')
@@ -262,12 +255,12 @@ class MyExperiment(ExperimentBase):
                             print('************************************************************************')
                             print(' ')
                             self.counter += 1
-                            t_exp_trial=t
-                            reached=True
+                            t_exp_trial = t
+                            reached = True
 
 
 
-                        if t> t_exp+12*60 or t>t_exp+5*60 and nStimuli == 0:  #3.8
+                        if t > t_exp + 12*60 or t > t_exp + 5*60 and nStimuli == 0:  #3.8
                         
 
                         #if t> t_exp+15*60:
@@ -282,14 +275,14 @@ class MyExperiment(ExperimentBase):
 
                             print('************************************************************************')
                             print(' ')
-                            nStimuli = nStimuli+1
+                            nStimuli = nStimuli + 1
                             self.counter = 0
                             print('nStimulus',nStimuli, 'trial:',self.counter )
                             self.updateStimuli(nStimuli)
                             self.reset_origin()
-                            t_exp=t
-                            t_exp_trial=t
-                            print('texp' , t-t_exp)
+                            t_exp = t
+                            t_exp_trial = t
+                            print('texp' , t - t_exp)
 
                         #remove!!!!!next two lines / (for checking end of experiment, entering stim4 immed)
 
@@ -317,9 +310,9 @@ class MyExperiment(ExperimentBase):
 
 
 
-                self.rand+=1
-                if self.rand%1000==0:
-                    output.write('%.8f, %.8f, %.8f,  %d, %.8f, %s\n' % (self.locPosition['x'],self.locPosition['y'],self.locPosition['z'], self.counter, t, str(nStimuli)))
+                self.rand += 1
+                if self.rand%1000 == 0:
+                    output.write('%.8f, %.8f, %.8f,  %d, %.8f, %s\n' % (self.locPosition['x'], self.locPosition['y'], self.locPosition['z'], self.counter, t, str(nStimuli)))
             
 
     def reset_origin(self):
@@ -395,7 +388,7 @@ class MyExperiment(ExperimentBase):
         # pick a new stimulus from available permutations
         for nPost in range(0,3):
             #print((project,self.expTrial,self.replicate,nStimuli))
-            cursorProject.execute("Select post"+str(nPost)+" from projects where project = ? and exp = ? and replicate = ? and nStimuli =?",(project,self.expTrial,self.replicate,nStimuli))
+            cursorProject.execute("Select post" + str(nPost) + " from projects where project = ? and exp = ? and replicate = ? and nStimuli = ?", (project, self.expTrial, self.replicate, nStimuli))
             fetched = cursorProject.fetchall()
 
             data = fetched[0][0]
@@ -446,17 +439,15 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d','--debug-display', action='store_true', default=False,
-                        help='also run on the debug display server')
+    parser.add_argument('-d','--debug-display', action = 'store_true', default = False,
+                        help = 'also run on the debug display server')
     args = parser.parse_args()
 
-    e = MyExperiment.new_osg(debug=args.debug_display)
-    e.publish_state(msg='starting')
-    e.start(record=False)
+    e = MyExperiment.new_osg(debug = args.debug_display)
+    e.publish_state(msg = 'starting')
+    e.start(record = False)
     e.writeInDb()
     #uncomment write in Db so it writes!!! record=True so it records!!!
-    
-
 
     e.running_writing_csv()
    

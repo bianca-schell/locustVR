@@ -14,8 +14,8 @@ posts = range(2,3)
 posts = list(itertools.chain.from_iterable(itertools.repeat(x, 10) for x in posts))
 distances = [3.0]	#in meter
 start_ang_split = 16
-angles2 = [np.pi/3, 7*np.pi/18, np.pi]			#degree: 60, 70, 180:  [np.pi/3, 7*np.pi/18, np.pi]
-angles3 = [4.5*np.pi/18, 3*np.pi/18, 2*np.pi/3] #original: angles3 = [5*np.pi/18, 5*np.pi/18, 2*np.pi/3] #changed: 45,30,120
+angles2 = [np.pi/4, np.pi/3, np.pi]
+angles3 = [4.5*np.pi/18, 3*np.pi/18, 2*np.pi/3]
 
 
 # creates empty database
@@ -31,10 +31,7 @@ def FirstGen():
 										nSwitch integer,
 										nStimuli integer, 
 										post0 text,post1 text, 
-										post2 text)''')	#,post3 text, 
-										#post4 text,post5 text, 
-										#post6 text,post7 text, 
-										#post8 text,post9 text)''')
+										post2 text)''')
 	# commit and close connection
 	conn.commit()
 	conn.close()
@@ -51,16 +48,6 @@ def FirstGen():
 	# commit and close connection
 	conn.commit()
 	conn.close()
-
-
-# creates a no post  control
-'''def dataController():
-	data=[]
-	for j in range(0,nPosts):
-		dataStimuli = 'None'
-		data.append(str(dataStimuli))
-	return data '''
-
 
 # creates a single post fixation control
 def dataController():
@@ -86,30 +73,31 @@ def defineStimuli(expType, nSwitch, nReplicates=2, N=2, d=1.0, ang=np.pi/6, pick
 	dataControl = dataController()
 
 
-	if expType == 'angles':
-		data = []
-		# define stimuli nSwitch-2 times since we have two control stimuli - one in the beginning; other in the end
-		for k in range(0,nSwitch-2):
-			data.append([])
-			# pick a random start angle (one of six angles obtained by splitting angle of symmetry for N posts in six parts)
-			start_ang = 2*np.pi*(np.random.randint(start_ang_split)+1) / start_ang_split
-			# pick a random angle that will be the angle between successive posts
-			ang = -1.0
-			while ang in picked or ang < 0.0:
-				ang = np.random.randint(3)
-			picked.append(ang)
+	data = []
+	# define stimuli nSwitch-2 times since we have two control stimuli - one in the beginning; other in the end
+	for k in range(0,nSwitch-2):
+		data.append([])
+		# pick a random start angle (one of six angles obtained by splitting angle of symmetry for N posts in six parts)
+		start_ang = 2*np.pi*(np.random.randint(start_ang_split)+1) / start_ang_split
+		# pick a random angle that will be the angle between successive posts
+		ang = -1.0
+		while ang in picked or ang < 0.0:
+			ang = np.random.randint(3)
+		picked.append(ang)
+		# randomise left-right post (so the grey post may appear on either side of the black post)
+		left = np.random.randint(2)
 
-			for j in range(0,nPosts):
-				if j < N:
-					r = d
-					angle = angles2[ang] if N == 2 else angles3[ang]
-					theta = start_ang + j*angle
-					x = r*np.cos(theta)
-					y = r*np.sin(theta)
-					dataStimuli = {'position' : (x,y), 'distance' : r, 'angle' : angle}
-				else:
-					dataStimuli = 'None'
-				data[-1].append(str(dataStimuli))
+		for j in range(0,nPosts):
+			if j < N:
+				r = d
+				angle = angles2[ang] if N == 2 else angles3[ang]
+				theta = start_ang + j*angle if left == 0 else start_ang - j*angle
+				x = r*np.cos(theta)
+				y = r*np.sin(theta)
+				dataStimuli = {'position' : (x,y), 'distance' : r, 'angle' : angle}
+			else:
+				dataStimuli = 'None'
+			data[-1].append(str(dataStimuli))
 	
 	# permute replicates before adding them to the database
 	# sandwich permutations between controls
@@ -130,8 +118,8 @@ def writeStimuli(cursor,projects,exp,nReplicate,tExp,tSwitch,nSwitch,data):
 
 	for perm in range(0, nReplicate):
 		for k in range(0, nSwitch):
-			values = [projects, exp, perm, tExp, tSwitch, nSwitch, k, str(data[perm][k][0]), str(data[perm][k][1]), str(data[perm][k][2])]#, str(data[perm][k][3]), str(data[perm][k][4]), str(data[perm][k][5]), str(data[perm][k][6]), str(data[perm][k][7]), str(data[perm][k][8]), str(data[perm][k][9])]
-			cursor.execute("INSERT INTO projects VALUES (?,?,?,?,?,?,?,?,?,?)",values) #,?,?,?,?,?,?,?
+			values = [projects, exp, perm, tExp, tSwitch, nSwitch, k, str(data[perm][k][0]), str(data[perm][k][1]), str(data[perm][k][2])]
+			cursor.execute("INSERT INTO projects VALUES (?,?,?,?,?,?,?,?,?,?)",values)
 
 
 # fill database created by FirstGen
@@ -158,27 +146,20 @@ def main():
 	tSwitch = 3
 	nSwitch = 5
 	tExp = tSwitch*nSwitch   
-	nReplicates = 15
+	nReplicates = 5
 
 	N = 2
 	d = 1.0
 	ang = np.pi/6
 
-	if expType == 'nPosts':
+	
+	for N in posts:
 		for d in distances:
-			for ang in range(1,7):
-				# write your new stimuli
-				exp += 1
-				data = defineStimuli(expType, nSwitch, nReplicates, N=N, d=d, ang=ang)
-				writeStimuli(cursorProject, project, exp, nReplicate = nReplicates, tExp = tExp, tSwitch = tSwitch, nSwitch = nSwitch, data=data)
-	if expType == 'angles':
-		for N in posts:
-			for d in distances:
-				picked_angs = []
-				# write your new stimuli
-				exp += 1
-				data = defineStimuli(expType, nSwitch, nReplicates, N=N, d=d, ang=ang, picked=picked_angs)
-				writeStimuli(cursorProject, project, exp, nReplicate = nReplicates, tExp = tExp, tSwitch = tSwitch, nSwitch = nSwitch, data=data)
+			picked_angs = []
+			# write your new stimuli
+			exp += 1
+			data = defineStimuli(expType, nSwitch, nReplicates, N=N, d=d, ang=ang, picked=picked_angs)
+			writeStimuli(cursorProject, project, exp, nReplicate = nReplicates, tExp = tExp, tSwitch = tSwitch, nSwitch = nSwitch, data=data)
 
 
 	# commit and close connection
